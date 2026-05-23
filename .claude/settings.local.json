@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(robocopy \"d:\\\\D? �n\\\\D? �n\\\\DAYTRIP - Copy\\\\src\" \"d:\\\\D? �n\\\\D? �n\\\\DAYTRIP\\\\src\" /E /IS /IT /IM /XD \"d:\\\\D? �n\\\\D? �n\\\\DAYTRIP - Copy\\\\src\\\\Data\" /NFL /NDL 2>&1)"
+    ]
+  }
+}

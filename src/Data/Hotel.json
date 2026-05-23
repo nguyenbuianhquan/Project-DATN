@@ -1,0 +1,272 @@
+[
+  {
+    "id": 1,
+    "name": "Khách sạn Mường Thanh Luxury Đà Nẵng",
+    "type": "Khách sạn",
+    "location": "Đà Nẵng, Việt Nam",
+    "rating": 4.7,
+    "reviews": 122,
+    "price": 2800000,
+    "image": "/Images/hotel1.png",
+    "featured": true,
+    "description": "Khách sạn 5 sao bên bờ biển Mỹ Khê - Đà Nẵng. Tầm nhìn toàn cảnh biển xanh, hồ bơi vô cực và nhà hàng hải sản đặc sắc. Vị trí đắc địa, dịch vụ đẳng cấp quốc tế.",
+    "facilities": [
+      { "name": "Wi-Fi miễn phí", "icon": "wifi" },
+      { "name": "Hồ bơi vô cực", "icon": "swimming" },
+      { "name": "Nhà hàng", "icon": "restaurant" },
+      { "name": "Đưa đón sân bay", "icon": "bus" },
+      { "name": "Spa & Wellness", "icon": "heart-pulse" }
+    ],
+    "rooms": [
+      { "id": "r1", "name": "Phòng Deluxe Hướng Biển", "size": 35, "beds": "1 giường King", "maxGuests": 2, "price": 2800000, "available": true, "image": "/Images/hotel1.png", "amenities": ["Wi-Fi", "Điều hòa", "TV 55\"", "Minibar", "Ban công biển"] },
+      { "id": "r2", "name": "Suite Cao Cấp", "size": 55, "beds": "1 giường King + Sofa", "maxGuests": 3, "price": 4500000, "available": true, "image": "/Images/hotel2.png", "amenities": ["Wi-Fi", "Bồn tắm", "TV 65\"", "Minibar", "Phòng khách riêng"] },
+      { "id": "r3", "name": "Phòng Standard", "size": 25, "beds": "2 giường đơn", "maxGuests": 2, "price": 1800000, "available": false, "image": "/Images/hotel3.png", "amenities": ["Wi-Fi", "Điều hòa", "TV 42\""] },
+      { "id": "r4", "name": "Villa Riêng Tư", "size": 120, "beds": "1 giường King + 2 giường đơn", "maxGuests": 4, "price": 9500000, "available": true, "image": "/Images/hotel4.png", "amenities": ["Wi-Fi", "Hồ bơi riêng", "Bếp", "TV 75\"", "Bãi biển riêng"] }
+    ],
+    "userReviews": [
+      { "id": 1, "name": "Trần Minh Hà", "avatar": "TH", "rating": 5, "date": "15/03/2025", "comment": "Khách sạn tuyệt vời! View biển đẹp mê hồn, nhân viên phục vụ rất nhiệt tình. Sẽ quay lại lần nữa." },
+      { "id": 2, "name": "Nguyễn Bảo Long", "avatar": "NL", "rating": 4, "date": "02/04/2025", "comment": "Phòng rộng rãi, sạch sẽ. Bữa sáng buffet phong phú. Vị trí đẹp gần biển Mỹ Khê." },
+      { "id": 3, "name": "Lê Thu Thảo", "avatar": "LT", "rating": 5, "date": "20/04/2025", "comment": "Trải nghiệm tuyệt vời cho kỳ trăng mật. Dịch vụ spa đặc biệt ấn tượng. Rất đáng tiền!" }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Resort Vinpearl Sa Pa",
+    "type": "Resort",
+    "location": "Sa Pa, Lào Cai",
+    "rating": 4.9,
+    "reviews": 87,
+    "price": 3200000,
+    "image": "/Images/hotel2.png",
+    "featured": true,
+    "description": "Resort nghỉ dưỡng trên núi Sa Pa với tầm nhìn thung lũng Mường Hoa huyền ảo. Không khí mát mẻ quanh năm, kiến trúc độc đáo hòa quyện cùng thiên nhiên Tây Bắc.",
+    "facilities": [
+      { "name": "Wi-Fi miễn phí", "icon": "wifi" },
+      { "name": "Hồ bơi nước nóng", "icon": "water-flash" },
+      { "name": "Nhà hàng Tây Bắc", "icon": "restaurant" },
+      { "name": "Lò sưởi", "icon": "fire" },
+      { "name": "Spa truyền thống", "icon": "heart-pulse" }
+    ],
+    "rooms": [
+      { "id": "r1", "name": "Phòng Valley View", "size": 30, "beds": "1 giường Queen", "maxGuests": 2, "price": 3200000, "available": true, "image": "/Images/hotel2.png", "amenities": ["Wi-Fi", "Lò sưởi", "TV", "Minibar"] },
+      { "id": "r2", "name": "Bungalow Gia Đình", "size": 65, "beds": "1 giường King + 2 giường đơn", "maxGuests": 4, "price": 5500000, "available": true, "image": "/Images/hotel3.png", "amenities": ["Wi-Fi", "Bếp nhỏ", "Bồn tắm nước nóng", "Sân hiên"] },
+      { "id": "r3", "name": "Phòng Standard", "size": 22, "beds": "2 giường đơn", "maxGuests": 2, "price": 2200000, "available": false, "image": "/Images/hotel4.png", "amenities": ["Wi-Fi", "Lò sưởi", "TV"] },
+      { "id": "r4", "name": "Villa Núi Cao Cấp", "size": 90, "beds": "2 giường King", "maxGuests": 4, "price": 7800000, "available": true, "image": "/Images/hotel5.png", "amenities": ["Wi-Fi", "Bồn tắm riêng", "Bar", "Tầm nhìn thung lũng 360°"] }
+    ],
+    "userReviews": [
+      { "id": 1, "name": "Phạm Đức Hùng", "avatar": "PH", "rating": 5, "date": "10/02/2025", "comment": "Resort trên núi tuyệt đẹp. Không khí Sa Pa trong lành, view thung lũng Mường Hoa hùng vĩ. Phòng ấm cúng sang trọng." },
+      { "id": 2, "name": "Vũ Ngọc Ánh", "avatar": "VA", "rating": 5, "date": "25/03/2025", "comment": "Mùa hoa đào Sa Pa hoàn hảo! Trekking tiện lợi từ resort. Nhà hàng phục vụ món Tây Bắc ngon tuyệt." },
+      { "id": 3, "name": "Đặng Thị Lan", "avatar": "DL", "rating": 4, "date": "08/04/2025", "comment": "Phòng sạch đẹp, view núi tuyệt. Giá hợp lý cho trải nghiệm nhận được." }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Khách sạn Caravelle Sài Gòn",
+    "type": "Khách sạn",
+    "location": "TP. Hồ Chí Minh, Việt Nam",
+    "rating": 4.5,
+    "reviews": 233,
+    "price": 2500000,
+    "image": "/Images/hotel3.png",
+    "featured": false,
+    "description": "Biểu tượng lịch sử Sài Gòn tọa lạc tại trung tâm quận 1. Khách sạn 5 sao với bar rooftop nổi tiếng, view Nhà thờ Đức Bà và phố đi bộ Nguyễn Huệ ngay trước cửa.",
+    "facilities": [
+      { "name": "Wi-Fi miễn phí", "icon": "wifi" },
+      { "name": "Phòng gym", "icon": "boxing" },
+      { "name": "Bar sân thượng", "icon": "goblet" },
+      { "name": "Phòng hội nghị", "icon": "briefcase" },
+      { "name": "Dịch vụ phòng 24/7", "icon": "service" }
+    ],
+    "rooms": [
+      { "id": "r1", "name": "Phòng City View Deluxe", "size": 28, "beds": "1 giường King", "maxGuests": 2, "price": 2500000, "available": true, "image": "/Images/hotel3.png", "amenities": ["Wi-Fi", "Điều hòa", "TV Smart", "Két an toàn"] },
+      { "id": "r2", "name": "Phòng Executive Plus", "size": 38, "beds": "1 giường King", "maxGuests": 2, "price": 3800000, "available": true, "image": "/Images/hotel4.png", "amenities": ["Wi-Fi", "Phòng làm việc", "Lounge access", "Minibar"] },
+      { "id": "r3", "name": "Phòng Twin Standard", "size": 26, "beds": "2 giường đơn", "maxGuests": 2, "price": 1900000, "available": true, "image": "/Images/hotel5.png", "amenities": ["Wi-Fi", "Điều hòa", "TV"] },
+      { "id": "r4", "name": "Suite Nguyễn Huệ", "size": 70, "beds": "1 giường King + Sofa bed", "maxGuests": 3, "price": 5500000, "available": false, "image": "/Images/hotel1.png", "amenities": ["Wi-Fi", "Phòng khách riêng", "Bếp nhỏ", "View phố đi bộ"] }
+    ],
+    "userReviews": [
+      { "id": 1, "name": "Hoàng Văn Nam", "avatar": "HN", "rating": 4, "date": "05/03/2025", "comment": "Vị trí trung tâm quận 1, đi lại rất tiện. Phòng sạch, hiện đại. Nhân viên thân thiện và hữu ích." },
+      { "id": 2, "name": "Ngô Thị Mai", "avatar": "NM", "rating": 5, "date": "18/03/2025", "comment": "Tuyệt vời cho chuyến công tác! Phòng Executive đáng tiền, phòng họp tiện nghi, kết nối internet tốc độ cao." },
+      { "id": 3, "name": "Bùi Quang Minh", "avatar": "BM", "rating": 4, "date": "30/04/2025", "comment": "Khách sạn tốt giữa lòng Sài Gòn. Bar sân thượng có view tuyệt đẹp về đêm. Sẽ quay lại." }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Biệt thự Ana Mandara Cam Ranh",
+    "type": "Biệt thự",
+    "location": "Cam Ranh, Khánh Hòa",
+    "rating": 4.6,
+    "reviews": 154,
+    "price": 5500000,
+    "image": "/Images/hotel4.png",
+    "featured": true,
+    "description": "Biệt thự nghỉ dưỡng ven biển Cam Ranh tuyệt đẹp. Từng villa có hồ bơi riêng, sân vườn nhiệt đới và tầm nhìn thẳng ra Vịnh Cam Ranh. Lý tưởng cho gia đình và cặp đôi.",
+    "facilities": [
+      { "name": "Hồ bơi riêng", "icon": "drop" },
+      { "name": "Dịch vụ spa", "icon": "heart-2" },
+      { "name": "Bãi biển riêng", "icon": "sun" },
+      { "name": "Bữa sáng miễn phí", "icon": "cup-line" },
+      { "name": "Wi-Fi miễn phí", "icon": "wifi" }
+    ],
+    "rooms": [
+      { "id": "r1", "name": "Villa Bãi Biển", "size": 80, "beds": "1 giường King", "maxGuests": 2, "price": 5500000, "available": true, "image": "/Images/hotel4.png", "amenities": ["Wi-Fi", "Hồ bơi riêng", "Bãi biển trước sân", "Bữa sáng"] },
+      { "id": "r2", "name": "Villa Vườn Nhiệt Đới", "size": 60, "beds": "1 giường King", "maxGuests": 2, "price": 4200000, "available": true, "image": "/Images/hotel5.png", "amenities": ["Wi-Fi", "Hồ bơi riêng", "Vườn nhiệt đới", "Bữa sáng"] },
+      { "id": "r3", "name": "Phòng Deluxe Garden", "size": 35, "beds": "1 giường Queen", "maxGuests": 2, "price": 2800000, "available": false, "image": "/Images/hotel1.png", "amenities": ["Wi-Fi", "Điều hòa", "View vườn"] },
+      { "id": "r4", "name": "Grand Villa Gia Đình", "size": 200, "beds": "2 giường King", "maxGuests": 4, "price": 12000000, "available": true, "image": "/Images/hotel2.png", "amenities": ["Wi-Fi", "2 hồ bơi", "Butler riêng", "Spa riêng", "Bãi biển riêng"] }
+    ],
+    "userReviews": [
+      { "id": 1, "name": "Trần Thị Hương", "avatar": "TH", "rating": 5, "date": "14/02/2025", "comment": "Kỳ trăng mật hoàn hảo! Villa hồ bơi riêng lãng mạn, bãi biển đẹp, nhân viên chu đáo. Không thể tuyệt hơn!" },
+      { "id": 2, "name": "Lý Tuấn Anh", "avatar": "LA", "rating": 5, "date": "22/03/2025", "comment": "Cam Ranh đẹp và villa này còn đẹp hơn. View biển tuyệt vời, đồ ăn sáng ngon, spa thư giãn tuyệt vời." },
+      { "id": 3, "name": "Phạm Thu Nga", "avatar": "PN", "rating": 4, "date": "10/04/2025", "comment": "Biệt thự đẹp, dịch vụ tốt. Hồ bơi riêng trong villa rất thích. Nhân viên phục vụ tận tình." }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Căn hộ Vinhomes Central Park",
+    "type": "Căn hộ",
+    "location": "TP. Hồ Chí Minh, Việt Nam",
+    "rating": 4.3,
+    "reviews": 199,
+    "price": 1800000,
+    "image": "/Images/hotel5.png",
+    "featured": false,
+    "description": "Căn hộ dịch vụ cao cấp tại khu đô thị Vinhomes Central Park, quận Bình Thạnh. Tầm nhìn sông Sài Gòn và công viên xanh, tiện ích đẳng cấp với hồ bơi vô cực trên cao.",
+    "facilities": [
+      { "name": "Hồ bơi tầng cao", "icon": "water-flash" },
+      { "name": "Công viên 36ha", "icon": "compass-3" },
+      { "name": "Nhà hàng nội khu", "icon": "restaurant" },
+      { "name": "Phòng gym", "icon": "boxing" },
+      { "name": "Đưa đón sân bay", "icon": "bus" }
+    ],
+    "rooms": [
+      { "id": "r1", "name": "Studio View Sông", "size": 40, "beds": "1 giường King", "maxGuests": 2, "price": 1800000, "available": true, "image": "/Images/hotel5.png", "amenities": ["Wi-Fi", "Điều hòa", "TV Smart", "Bếp nhỏ"] },
+      { "id": "r2", "name": "1 Phòng Ngủ View Công Viên", "size": 65, "beds": "1 giường King + Sofa", "maxGuests": 3, "price": 2800000, "available": false, "image": "/Images/hotel1.png", "amenities": ["Wi-Fi", "Phòng khách riêng", "Bếp đầy đủ", "Máy giặt"] },
+      { "id": "r3", "name": "2 Phòng Ngủ Gia Đình", "size": 95, "beds": "2 giường King", "maxGuests": 4, "price": 3900000, "available": true, "image": "/Images/hotel2.png", "amenities": ["Wi-Fi", "2 phòng ngủ", "Bếp đầy đủ", "Máy giặt", "Điều hòa 2 chiều"] },
+      { "id": "r4", "name": "Penthouse Hướng Sông", "size": 150, "beds": "2 giường King", "maxGuests": 4, "price": 7500000, "available": true, "image": "/Images/hotel3.png", "amenities": ["Wi-Fi", "Sân thượng riêng", "Bếp cao cấp", "Bồn tắm nổi", "Hầu bao riêng"] }
+    ],
+    "userReviews": [
+      { "id": 1, "name": "Đinh Công Thành", "avatar": "DT", "rating": 4, "date": "08/01/2025", "comment": "Căn hộ tiện nghi, view sông Sài Gòn đẹp. Khu vực an ninh tốt, tiện ích đầy đủ trong nội khu." },
+      { "id": 2, "name": "Hà Thị Linh", "avatar": "HL", "rating": 5, "date": "15/02/2025", "comment": "Trải nghiệm sống như cư dân Vinhomes. Hồ bơi tầng cao view tuyệt đẹp. Dịch vụ 5 sao thực sự!" },
+      { "id": 3, "name": "Nguyễn Hải Đăng", "avatar": "ND", "rating": 4, "date": "01/03/2025", "comment": "Căn hộ hiện đại, đầy đủ tiện nghi. Công viên xanh ngay dưới chân. Rất phù hợp cho gia đình." }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Resort Fusion Maia Đà Nẵng",
+    "type": "Resort",
+    "location": "Đà Nẵng, Việt Nam",
+    "rating": 4.8,
+    "reviews": 110,
+    "price": 3500000,
+    "image": "/Images/hotel6.png",
+    "featured": true,
+    "description": "Resort all-inclusive 5 sao trên bãi biển Mỹ Khê - Đà Nẵng. Giá phòng bao gồm toàn bộ spa treatments không giới hạn, ẩm thực nhà hàng và mini-bar hằng ngày.",
+    "facilities": [
+      { "name": "Spa không giới hạn", "icon": "plant" },
+      { "name": "All-inclusive", "icon": "mental-health" },
+      { "name": "Bể bơi", "icon": "swimming" },
+      { "name": "Wi-Fi miễn phí", "icon": "wifi" },
+      { "name": "Yoga & Thiền", "icon": "heart-pulse" }
+    ],
+    "rooms": [
+      { "id": "r1", "name": "Phòng Ocean Garden", "size": 30, "beds": "1 giường King", "maxGuests": 2, "price": 3500000, "available": true, "image": "/Images/hotel6.png", "amenities": ["Wi-Fi", "Spa không giới hạn", "Minibar", "Bữa sáng hữu cơ"] },
+      { "id": "r2", "name": "Biệt thự Hồ Bơi Riêng", "size": 50, "beds": "1 giường Queen", "maxGuests": 2, "price": 5800000, "available": true, "image": "/Images/hotel7.png", "amenities": ["Wi-Fi", "Hồ bơi riêng", "Spa 3h/ngày", "Bữa ăn 3 bữa"] },
+      { "id": "r3", "name": "Phòng Garden View", "size": 22, "beds": "2 giường đơn", "maxGuests": 2, "price": 2200000, "available": false, "image": "/Images/hotel8.png", "amenities": ["Wi-Fi", "Điều hòa", "TV", "Spa 1h/ngày"] },
+      { "id": "r4", "name": "Sky Villa Hướng Biển", "size": 70, "beds": "1 giường King", "maxGuests": 2, "price": 8500000, "available": true, "image": "/Images/hotel9.png", "amenities": ["Wi-Fi", "Hồ bơi riêng", "Spa không giới hạn", "Butler"] }
+    ],
+    "userReviews": [
+      { "id": 1, "name": "Cao Thị Bích", "avatar": "CB", "rating": 5, "date": "12/01/2025", "comment": "Resort tuyệt vời nhất Đà Nẵng! Spa không giới hạn mỗi ngày - thật sự nghỉ ngơi hoàn toàn. Đồ ăn ngon." },
+      { "id": 2, "name": "Lương Thanh Tùng", "avatar": "LT", "rating": 5, "date": "20/02/2025", "comment": "All-inclusive tuyệt vời. Không cần lo chi phí gì thêm. Bãi biển sạch đẹp ngay trước cửa phòng." },
+      { "id": 3, "name": "Trịnh Thúy Nga", "avatar": "TN", "rating": 4, "date": "15/03/2025", "comment": "Resort đẳng cấp, dịch vụ spa thư giãn tuyệt vời. Yoga buổi sáng ven biển rất tuyệt. Đáng để trải nghiệm." }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Khách sạn InterContinental Hà Nội",
+    "type": "Khách sạn",
+    "location": "Hà Nội, Việt Nam",
+    "rating": 4.4,
+    "reviews": 142,
+    "price": 2600000,
+    "image": "/Images/hotel7.png",
+    "featured": false,
+    "description": "Khách sạn 5 sao ven Hồ Tây lãng mạn - Hà Nội. Tầm nhìn toàn cảnh Hồ Tây và Tháp Trấn Quốc huyền ảo. Vị trí lý tưởng gần các điểm du lịch văn hóa của Thủ đô.",
+    "facilities": [
+      { "name": "View Hồ Tây", "icon": "eye-2" },
+      { "name": "Đỗ xe miễn phí", "icon": "car" },
+      { "name": "Bữa sáng buffet", "icon": "cup-line" },
+      { "name": "Mini Bar", "icon": "goblet" },
+      { "name": "Wi-Fi miễn phí", "icon": "wifi" }
+    ],
+    "rooms": [
+      { "id": "r1", "name": "Phòng Hồ Tây Deluxe", "size": 32, "beds": "1 giường King", "maxGuests": 2, "price": 2600000, "available": true, "image": "/Images/hotel7.png", "amenities": ["Wi-Fi", "View Hồ Tây", "Bữa sáng", "Minibar"] },
+      { "id": "r2", "name": "Phòng Panoramic Lake", "size": 40, "beds": "1 giường King", "maxGuests": 2, "price": 3800000, "available": true, "image": "/Images/hotel8.png", "amenities": ["Wi-Fi", "Tầm nhìn 270°", "Bữa sáng", "Bồn tắm"] },
+      { "id": "r3", "name": "Phòng Deluxe Standard", "size": 24, "beds": "2 giường đơn", "maxGuests": 2, "price": 2000000, "available": true, "image": "/Images/hotel9.png", "amenities": ["Wi-Fi", "Điều hòa", "TV"] },
+      { "id": "r4", "name": "Suite Hà Nội", "size": 80, "beds": "1 giường King + Sofa", "maxGuests": 3, "price": 6200000, "available": false, "image": "/Images/hotel1.png", "amenities": ["Wi-Fi", "Phòng khách riêng", "View Hồ Tây panorama", "Bồn tắm đứng"] }
+    ],
+    "userReviews": [
+      { "id": 1, "name": "Võ Thành Đức", "avatar": "VD", "rating": 5, "date": "05/02/2025", "comment": "View Hồ Tây đẹp đến nín thở! Phòng hiện đại, bữa sáng ngon. Vị trí đi bộ đến Lăng Chủ tịch dễ dàng." },
+      { "id": 2, "name": "Phan Thị Thu", "avatar": "PT", "rating": 4, "date": "20/03/2025", "comment": "Khách sạn 5 sao ấm cúng, nhân viên nhiệt tình. Bữa sáng phong phú với đặc sản Hà Nội." },
+      { "id": 3, "name": "Đỗ Quang Vinh", "avatar": "DV", "rating": 4, "date": "08/04/2025", "comment": "Trải nghiệm Hà Nội đẳng cấp. Khách sạn hỗ trợ tour tham quan phố cổ và danh thắng rất tiện." }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Căn hộ Sunrise City View",
+    "type": "Căn hộ",
+    "location": "TP. Hồ Chí Minh, Việt Nam",
+    "rating": 4.9,
+    "reviews": 95,
+    "price": 1500000,
+    "image": "/Images/hotel8.png",
+    "featured": true,
+    "description": "Căn hộ dịch vụ tiêu chuẩn quốc tế tại Sunrise City View, quận 7. Tầm nhìn 270° toàn cảnh TP.HCM, khu phức hợp mua sắm - giải trí CRESCENT MALL ngay bên cạnh.",
+    "facilities": [
+      { "name": "Lò sưởi", "icon": "fire" },
+      { "name": "Tầm nhìn thành phố", "icon": "landscape" },
+      { "name": "Bếp đầy đủ", "icon": "compass-3" },
+      { "name": "Máy giặt", "icon": "fire-fill" },
+      { "name": "Thú cưng OK", "icon": "service" }
+    ],
+    "rooms": [
+      { "id": "r1", "name": "Studio Hiện Đại", "size": 30, "beds": "1 giường Queen", "maxGuests": 2, "price": 1500000, "available": true, "image": "/Images/hotel8.png", "amenities": ["Wi-Fi", "Bếp nhỏ", "Máy giặt", "View thành phố"] },
+      { "id": "r2", "name": "1 Phòng Ngủ Gia Đình", "size": 55, "beds": "1 giường King + 2 giường đơn", "maxGuests": 4, "price": 2500000, "available": true, "image": "/Images/hotel9.png", "amenities": ["Wi-Fi", "Bếp đầy đủ", "Máy giặt", "Sân thượng"] },
+      { "id": "r3", "name": "Studio Budget", "size": 25, "beds": "1 giường Queen", "maxGuests": 2, "price": 1100000, "available": false, "image": "/Images/hotel1.png", "amenities": ["Wi-Fi", "Bếp nhỏ", "Điều hòa"] },
+      { "id": "r4", "name": "Duplex Penthouse", "size": 100, "beds": "2 giường King", "maxGuests": 6, "price": 6500000, "available": true, "image": "/Images/hotel2.png", "amenities": ["Wi-Fi", "Bồn tắm ngoài trời", "Bếp rộng", "2 tầng", "Sân thượng riêng"] }
+    ],
+    "userReviews": [
+      { "id": 1, "name": "Trương Văn Khoa", "avatar": "TK", "rating": 5, "date": "10/01/2025", "comment": "Căn hộ view thành phố tuyệt đẹp! Bếp đầy đủ, máy giặt, tiện nghi như nhà. Rất phù hợp cho ở dài ngày." },
+      { "id": 2, "name": "Nguyễn Thị Phương", "avatar": "NP", "rating": 5, "date": "28/02/2025", "comment": "Sunrise City View tuyệt vời. Căn hộ hiện đại, sạch sẽ. Crescent Mall ngay bên cạnh. Đem thú cưng đến được." },
+      { "id": 3, "name": "Lê Văn Hải", "avatar": "LH", "rating": 5, "date": "15/03/2025", "comment": "Điểm đến hoàn hảo khi đến Sài Gòn công tác dài ngày! Bếp nấu ăn tiết kiệm, không khí thoáng mát." }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Khách sạn Sofitel Legend Metropole Hà Nội",
+    "type": "Khách sạn",
+    "location": "Hà Nội, Việt Nam",
+    "rating": 4.2,
+    "reviews": 176,
+    "price": 5200000,
+    "image": "/Images/hotel9.png",
+    "featured": false,
+    "description": "Kiệt tác kiến trúc thực dân Pháp từ năm 1901 tại trung tâm Hà Nội. Khách sạn lịch sử biểu tượng với phòng Grand Ballroom, nhà hàng Le Beaulieu và bộ sưu tập nghệ thuật độc đáo.",
+    "facilities": [
+      { "name": "Phòng lịch sử", "icon": "building-2" },
+      { "name": "Piano Bar", "icon": "music-2" },
+      { "name": "Concierge 24/7", "icon": "customer-service-2" },
+      { "name": "Bữa sáng miễn phí", "icon": "cup-line" },
+      { "name": "Wi-Fi", "icon": "wifi" }
+    ],
+    "rooms": [
+      { "id": "r1", "name": "Phòng Prestige Lịch Sử", "size": 45, "beds": "1 giường King", "maxGuests": 2, "price": 5200000, "available": true, "image": "/Images/hotel9.png", "amenities": ["Wi-Fi", "Trần cao 3.5m", "Nội thất Pháp cổ", "Bữa sáng"] },
+      { "id": "r2", "name": "Suite Hanoian", "size": 90, "beds": "1 giường King + Sofa", "maxGuests": 3, "price": 8500000, "available": true, "image": "/Images/hotel1.png", "amenities": ["Wi-Fi", "Phòng tiếp khách", "View Hồ Gươm", "Butler"] },
+      { "id": "r3", "name": "Phòng Opera Wing", "size": 55, "beds": "1 giường King", "maxGuests": 2, "price": 6800000, "available": false, "image": "/Images/hotel2.png", "amenities": ["Wi-Fi", "Phòng tắm marble", "Minibar cao cấp"] },
+      { "id": "r4", "name": "Grand Presidential Suite", "size": 200, "beds": "2 giường King", "maxGuests": 4, "price": 25000000, "available": true, "image": "/Images/hotel3.png", "amenities": ["Wi-Fi", "Phòng tiếp tân riêng", "Đầu bếp theo yêu cầu", "Xe limousine"] }
+    ],
+    "userReviews": [
+      { "id": 1, "name": "Hoàng Thị Lan Anh", "avatar": "HA", "rating": 4, "date": "18/01/2025", "comment": "Huyền thoại Hà Nội 100 năm lịch sử. Kiến trúc Pháp tráng lệ, phòng rộng và trang nhã. Trải nghiệm đáng nhớ." },
+      { "id": 2, "name": "Phan Quốc Bảo", "avatar": "PB", "rating": 5, "date": "14/03/2025", "comment": "Piano bar tuyệt vời! Cocktail đặc trưng Metropole, âm nhạc cổ điển Pháp trong không gian huyền thoại." },
+      { "id": 3, "name": "Đặng Thị Minh Trang", "avatar": "DT", "rating": 4, "date": "25/04/2025", "comment": "Trải nghiệm Hà Nội đẳng cấp! Gần Hồ Gươm, Nhà Hát Lớn. Concierge hỗ trợ tour tham quan tận tình." }
+    ]
+  }
+]

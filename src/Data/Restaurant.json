@@ -1,0 +1,101 @@
+[
+  {
+    "id": 10,
+    "title": "Nhà hàng Hải sản Phú Quốc",
+    "location": "Phú Quốc, Kiên Giang",
+    "price": 450000,
+    "oldPrice": 550000,
+    "rating": 4.7,
+    "reviews": 120,
+    "tag": "Hải sản",
+    "image": "/Images/restaurent1.png"
+  },
+  {
+    "id": 11,
+    "title": "Nhà hàng Bếp Hội An",
+    "location": "Hội An, Quảng Nam",
+    "price": 320000,
+    "oldPrice": 380000,
+    "rating": 4.9,
+    "reviews": 95,
+    "tag": "Đặc sản",
+    "image": "/Images/restaurent2.png"
+  },
+  {
+    "id": 12,
+    "title": "Buffet BBQ Hàn Quốc Lẩu Nướng",
+    "location": "Quận 1, TP. Hồ Chí Minh",
+    "price": 299000,
+    "oldPrice": 350000,
+    "rating": 4.8,
+    "reviews": 185,
+    "tag": "Buffet",
+    "image": "/Images/restaurent3.png"
+  },
+  {
+    "id": 13,
+    "title": "Nhà hàng Biển Xanh Nha Trang",
+    "location": "Nha Trang, Khánh Hòa",
+    "price": 680000,
+    "oldPrice": 820000,
+    "rating": 4.6,
+    "reviews": 78,
+    "tag": "Cao cấp",
+    "image": "/Images/restaurent4.png"
+  },
+  {
+    "id": 14,
+    "title": "Cà phê Phố Cổ Hà Nội",
+    "location": "Hoàn Kiếm, Hà Nội",
+    "price": 85000,
+    "oldPrice": 85000,
+    "rating": 4.5,
+    "reviews": 230,
+    "tag": "Cà phê",
+    "image": "/Images/restaurent5.png"
+  },
+  {
+    "id": 15,
+    "title": "Nhà hàng Ngon – Cơm Việt Nam",
+    "location": "Quận 1, TP. Hồ Chí Minh",
+    "price": 195000,
+    "oldPrice": 195000,
+    "rating": 4.8,
+    "reviews": 310,
+    "tag": "Việt Nam",
+    "image": "/Images/restaurent6.png"
+  },
+  {
+    "id": 16,
+    "title": "The Deck Saigon Fine Dining",
+    "location": "Thủ Đức, TP. Hồ Chí Minh",
+    "price": 950000,
+    "oldPrice": 1100000,
+    "rating": 4.9,
+    "reviews": 145,
+    "tag": "Fine Dining",
+    "image": "/Images/restaurent7.png"
+  },
+  {
+    "id": 17,
+    "title": "Nhà hàng Trăm Mây Đà Lạt",
+    "location": "Đà Lạt, Lâm Đồng",
+    "price": 250000,
+    "oldPrice": 250000,
+    "rating": 4.9,
+    "reviews": 88,
+    "tag": "Lãng mạn",
+    "image": "/Images/restaurent8.png"
+  },
+  {
+    "id": 18,
+    "title": "Buffet Hải sản Đà Nẵng",
+    "location": "Đà Nẵng",
+    "price": 580000,
+    "oldPrice": 680000,
+    "rating": 4.7,
+    "reviews": 162,
+    "tag": "Buffet",
+    "image": "/Images/restaurent9.png"
+  }
+]
