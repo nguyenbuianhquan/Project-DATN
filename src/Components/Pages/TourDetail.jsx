@@ -122,7 +122,7 @@ const TourDetailPage = () => {
             quantity: totalGuests,
             location: tour.location || 'Điểm đến đã chọn',
         }));
-        navigate('/booking-info');
+        navigate('/checkout');
     };
 
     return (

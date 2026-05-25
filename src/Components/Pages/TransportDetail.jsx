@@ -115,7 +115,7 @@ const TransportDetail = () => {
             quantity: 1,
             location: vehicle.location || 'Điểm đón',
         }));
-        navigate('/booking-info');
+        navigate('/checkout');
     };
 
     return (

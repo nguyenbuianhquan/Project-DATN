@@ -12,6 +12,7 @@ import Restaurants from './Components/Pages/Restaurant';
 import CartPage from './Components/Pages/Cart';
 import CheckoutPage from './Components/Pages/ConfirmYourBooking';
 import PaymentPage from './Components/Pages/PaymentPage';
+import CheckoutUnified from './Components/Pages/CheckoutUnified';
 import BookingConfirmation from "./Components/Pages/Tour_Booking_Summery";
 import Footer from './Components/Footer/Footer';
 import About from './Components/Pages/About';
@@ -91,6 +92,9 @@ function AppLayout() {
         <Route path="/transport/:id" element={<TransportDetail />} />
         <Route path="/restaurants/:id" element={<RestaurantDetail />} />
         <Route path="/cart" element={<CartPage />} />
+        {/* Trang checkout mới – kết hợp thông tin + thanh toán */}
+        <Route path="/checkout" element={<CheckoutUnified />} />
+        {/* Giữ lại route cũ để backward compat */}
         <Route path="/booking-info" element={<CheckoutPage />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/Tour_Booking_Summery" element={<BookingConfirmation />} />

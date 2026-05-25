@@ -140,7 +140,7 @@ const RestaurantDetail = () => {
             quantity: totalGuests,
             location: restaurant.location || 'Điểm đến đã chọn',
         }));
-        navigate('/booking-info');
+        navigate('/checkout');
     };
 
     return (

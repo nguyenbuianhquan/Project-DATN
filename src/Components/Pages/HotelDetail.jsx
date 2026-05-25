@@ -111,7 +111,7 @@ const HotelDetail = () => {
             quantity: 1,
             location: hotel.location || 'Điểm đến đã chọn',
         }));
-        navigate('/booking-info');
+        navigate('/checkout');
     };
 
     return (
