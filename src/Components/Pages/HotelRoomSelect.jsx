@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import hotelJson from '../../Data/Hotel.json';
 import { useAuth } from '../../Context/AuthContext';
+import { api } from '../../lib/api';
 
 /* ─── helpers ─────────────────────────────────────────────────── */
 const formatVND = (n) => Math.round(n).toLocaleString('vi-VN') + ' ₫';
@@ -85,6 +86,9 @@ const HotelRoomSelect = () => {
     const [selectedId,  setSelectedId]  = useState(null);
     const [imgError,    setImgError]    = useState({});
     const [booking,     setBooking]     = useState(false);
+    // Trạng thái "đang được giữ" cho từng phòng (chống đặt trùng)
+    const [heldRooms,   setHeldRooms]   = useState({}); // { [roomId]: true }
+    const [reserveError, setReserveError] = useState('');
 
     useEffect(() => { window.scrollTo(0, 0); }, []);
 
@@ -116,14 +120,55 @@ const HotelRoomSelect = () => {
         `${roomsCount} phòng`,
     ].filter(Boolean).join(' · ');
 
-    /* When user clicks "Chọn phòng này" */
-    const handleSelectRoom = (room) => {
+    /* When user clicks "Chọn phòng này" — có bước giữ chỗ chống đặt trùng */
+    const handleSelectRoom = async (room) => {
         if (!room.available) return;
+        if (heldRooms[room.id]) return;          // Phòng đang bị giữ bởi người khác
         if (!currentUser) { navigate('/signin'); return; }
 
         setSelectedId(room.id);
         setBooking(true);
+        setReserveError('');
 
+        // ── Bước 1: Gọi API giữ chỗ tạm (10 phút) ──────────────────────
+        // Nếu 2 user cùng click đúng lúc, chỉ 1 người thành công
+        if (checkin && checkout) {
+            try {
+                const reservation = await api.post('/rooms/reserve', {
+                    hotelId:  String(hotel.id),
+                    roomId:   room.id,
+                    checkIn:  checkin,
+                    checkOut: checkout,
+                });
+
+                // Lưu reservationId để dùng ở bước checkout (lớp bảo vệ 2)
+                localStorage.setItem('activeReservation', JSON.stringify({
+                    reservationId: reservation.reservationId,
+                    expiresAt:     reservation.expiresAt,
+                    hotelId:       String(hotel.id),
+                    roomId:        room.id,
+                }));
+
+            } catch (err) {
+                setBooking(false);
+                setSelectedId(null);
+
+                if (err.status === 409) {
+                    // Phòng vừa bị người khác giữ → đánh dấu trên UI
+                    setHeldRooms(prev => ({ ...prev, [room.id]: true }));
+                    setReserveError(err.message);
+                    // Sau 30 giây tự bỏ badge (phòng có thể được mở lại)
+                    setTimeout(() => {
+                        setHeldRooms(prev => { const n = {...prev}; delete n[room.id]; return n; });
+                    }, 30000);
+                } else {
+                    setReserveError(err.message || 'Không thể giữ chỗ. Vui lòng thử lại.');
+                }
+                return;
+            }
+        }
+
+        // ── Bước 2: Lưu thông tin đặt phòng và chuyển sang checkout ────
         const pricePerNight = room.price;
         const subTotal      = pricePerNight * nights * roomsCount;
         const tax           = Math.round(subTotal * 0.1);
@@ -275,6 +320,28 @@ const HotelRoomSelect = () => {
                     </div>
                 </div>
 
+                {/* Thông báo lỗi giữ chỗ (nếu phòng bị người khác giữ) */}
+                {reserveError && (
+                    <div className="hrs-reserve-error" style={{
+                        background: 'rgba(239,68,68,0.12)',
+                        border:     '1px solid rgba(239,68,68,0.4)',
+                        borderRadius: 10,
+                        padding:    '12px 16px',
+                        marginBottom: 16,
+                        color:      '#fca5a5',
+                        display:    'flex',
+                        alignItems: 'center',
+                        gap:        10,
+                    }}>
+                        <i className="ri-error-warning-line" style={{ fontSize: 18 }}></i>
+                        <span>{reserveError}</span>
+                        <button
+                            onClick={() => setReserveError('')}
+                            style={{ marginLeft: 'auto', background: 'none', border: 'none', color: '#fca5a5', cursor: 'pointer' }}
+                        >✕</button>
+                    </div>
+                )}
+
                 {/* Room cards */}
                 <div className="hrs-room-list">
                     {rooms.length === 0 ? (
@@ -286,11 +353,12 @@ const HotelRoomSelect = () => {
                         const imgSrc    = imgError[room.id] ? hotel.image : getRoomImage(room.name);
                         const nightTotal = room.price * nights * roomsCount;
                         const isSelected = selectedId === room.id;
+                        const isHeld     = heldRooms[room.id]; // Đang được người khác giữ
 
                         return (
                             <div
                                 key={room.id}
-                                className={`hrs-room-card${!room.available ? ' hrs-unavail' : ''}${isSelected ? ' hrs-selected' : ''}`}
+                                className={`hrs-room-card${(!room.available || isHeld) ? ' hrs-unavail' : ''}${isSelected ? ' hrs-selected' : ''}`}
                             >
                                 {/* Image */}
                                 <div className="hrs-room-img-wrap">
@@ -306,7 +374,14 @@ const HotelRoomSelect = () => {
                                             <span>Hết phòng</span>
                                         </div>
                                     )}
-                                    {room.available && (
+                                    {/* Badge: Đang được giữ bởi người khác */}
+                                    {room.available && isHeld && (
+                                        <div className="hrs-sold-overlay" style={{ background: 'rgba(245,158,11,0.85)' }}>
+                                            <i className="ri-timer-line"></i>
+                                            <span>Đang được giữ</span>
+                                        </div>
+                                    )}
+                                    {room.available && !isHeld && (
                                         <div className="hrs-avail-badge">
                                             <i className="ri-checkbox-circle-fill"></i> Còn phòng
                                         </div>
@@ -375,7 +450,12 @@ const HotelRoomSelect = () => {
                                         </div>
                                     </div>
 
-                                    {room.available ? (
+                                    {room.available && isHeld ? (
+                                        /* Phòng đang bị người khác giữ tạm */
+                                        <button className="hrs-select-btn hrs-disabled" disabled style={{ background: 'rgba(245,158,11,0.25)', borderColor: 'rgba(245,158,11,0.5)', color: '#fbbf24' }}>
+                                            <i className="ri-timer-line"></i> Đang được giữ
+                                        </button>
+                                    ) : room.available ? (
                                         <button
                                             className={`hrs-select-btn${isSelected && booking ? ' hrs-selecting' : ''}`}
                                             onClick={() => handleSelectRoom(room)}
@@ -383,7 +463,7 @@ const HotelRoomSelect = () => {
                                         >
                                             {isSelected && booking ? (
                                                 <>
-                                                    <i className="ri-loader-4-line ri-spin"></i> Đang chuyển...
+                                                    <i className="ri-loader-4-line ri-spin"></i> Đang giữ chỗ...
                                                 </>
                                             ) : (
                                                 <>

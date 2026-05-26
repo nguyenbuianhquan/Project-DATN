@@ -9,7 +9,12 @@ const headers = () => ({
 
 const handle = async (res) => {
     const data = await res.json()
-    if (!res.ok) throw new Error(data.error || 'Đã xảy ra lỗi.')
+    if (!res.ok) {
+        const err = new Error(data.error || 'Đã xảy ra lỗi.')
+        err.status = res.status          // ← Gắn HTTP status để frontend kiểm tra (vd: 409)
+        err.code   = data.code || null   // ← Gắn error code (vd: 'RESERVATION_EXPIRED')
+        throw err
+    }
     return data
 }
 

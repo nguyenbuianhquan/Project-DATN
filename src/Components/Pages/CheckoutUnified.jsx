@@ -108,8 +108,26 @@ const CheckoutUnified = () => {
     const [paying,   setPaying]   = useState(false);
     const [payError, setPayError] = useState("");
 
-    /* 10-min countdown */
-    const cd = useCountdown(600);
+    /* Reservation token (từ HotelRoomSelect — chống đặt trùng) */
+    const [reservation, setReservation] = useState(null);
+    const [reservExpired, setReservExpired] = useState(false);
+
+    /* 10-min countdown — tính từ expiresAt của reservation nếu có */
+    const cdSeconds = (() => {
+        if (reservation?.expiresAt) {
+            const diff = Math.floor((new Date(reservation.expiresAt) - Date.now()) / 1000);
+            return Math.max(0, diff);
+        }
+        return 600; // mặc định 10 phút nếu không có reservation
+    })();
+    const cd = useCountdown(cdSeconds);
+
+    /* Khi countdown hết → đánh dấu reservation đã hết hạn */
+    useEffect(() => {
+        if (cd.expired && reservation) {
+            setReservExpired(true);
+        }
+    }, [cd.expired, reservation]);
 
     /* ── init ── */
     useEffect(() => {
@@ -118,6 +136,16 @@ const CheckoutUnified = () => {
         // Pre-fill dates from bookingItem (set by HotelRoomSelect / Cart)
         if (stored?.date)     setDateFrom(stored.date);
         if (stored?.checkOut) setDateTo(stored.checkOut);
+
+        // Đọc reservation token (từ HotelRoomSelect — giữ chỗ tạm)
+        const resv = JSON.parse(localStorage.getItem("activeReservation") || "null");
+        if (resv) {
+            setReservation(resv);
+            // Kiểm tra ngay xem token còn hạn không
+            if (new Date(resv.expiresAt) <= new Date()) {
+                setReservExpired(true);
+            }
+        }
     }, []);
 
     useEffect(() => {
@@ -241,6 +269,13 @@ const CheckoutUnified = () => {
     /* ── submit ── */
     const handlePay = async () => {
         if (paying||!canPay) return;
+
+        // Kiểm tra reservation còn hạn không trước khi submit
+        if (reservation && reservExpired) {
+            setPayError("Phiên giữ chỗ đã hết hạn. Vui lòng quay lại chọn phòng.");
+            return;
+        }
+
         setPaying(true); setPayError("");
         try {
             await saveOrder({
@@ -277,8 +312,15 @@ const CheckoutUnified = () => {
 
                 // booking ref
                 bookingId,
+
+                // reservation token — lớp bảo vệ 2 chống đặt trùng
+                reservationId:  reservation?.reservationId || null,
             });
+
+            // Xóa reservation khỏi storage sau khi đặt thành công
             localStorage.removeItem("bookingItem");
+            localStorage.removeItem("activeReservation");
+
             navigate("/Tour_Booking_Summery", {
                 state: {
                     bookingId,
@@ -296,7 +338,13 @@ const CheckoutUnified = () => {
                 },
             });
         } catch(err) {
-            setPayError("Lỗi hệ thống: "+(err.message||"Vui lòng thử lại."));
+            if (err.status === 409 || err.code === 'RESERVATION_EXPIRED') {
+                // Phiên giữ chỗ hết hạn hoặc phòng đã bị đặt bởi người khác
+                setReservExpired(true);
+                setPayError(err.message || "Phiên giữ chỗ đã hết hạn. Vui lòng quay lại chọn phòng.");
+            } else {
+                setPayError("Lỗi hệ thống: "+(err.message||"Vui lòng thử lại."));
+            }
         } finally { setPaying(false); }
     };
 
@@ -329,6 +377,39 @@ const CheckoutUnified = () => {
 
                 <div className="cu-body">
                     <div className="cu-main">
+
+                        {/* ══ Banner: Reservation hết hạn ══ */}
+                        {reservation && reservExpired && (
+                            <div style={{
+                                background: 'rgba(239,68,68,0.12)',
+                                border:     '1px solid rgba(239,68,68,0.5)',
+                                borderRadius: 12,
+                                padding:    '14px 18px',
+                                marginBottom: 16,
+                                display:    'flex',
+                                alignItems: 'center',
+                                gap:        12,
+                                color:      '#fca5a5',
+                            }}>
+                                <i className="bi bi-clock-history" style={{ fontSize: 22, flexShrink: 0 }}></i>
+                                <div>
+                                    <div style={{ fontWeight: 600, marginBottom: 4 }}>Phiên giữ chỗ đã hết hạn</div>
+                                    <div style={{ fontSize: 13, opacity: 0.85 }}>
+                                        Chỗ của bạn đã được mở lại. Vui lòng quay lại chọn phòng để tiếp tục đặt.
+                                    </div>
+                                </div>
+                                <button
+                                    className="lp-btn"
+                                    style={{ marginLeft: 'auto', whiteSpace: 'nowrap', fontSize: 13, padding: '7px 14px' }}
+                                    onClick={() => {
+                                        localStorage.removeItem("activeReservation");
+                                        navigate(-1);
+                                    }}
+                                >
+                                    Chọn lại phòng
+                                </button>
+                            </div>
+                        )}
 
                         {/* ══ Service summary card ══ */}
                         {item && (

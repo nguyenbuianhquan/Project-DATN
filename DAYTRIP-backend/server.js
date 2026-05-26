@@ -8,6 +8,7 @@ import userRoutes    from './routes/users.js'
 import orderRoutes   from './routes/orders.js'
 import paymentRoutes from './routes/payments.js'
 import couponRoutes  from './routes/coupons.js'
+import roomRoutes    from './routes/rooms.js'
 
 const app = express()
 
@@ -19,6 +20,7 @@ app.use('/api/users',    userRoutes)
 app.use('/api/orders',   orderRoutes)
 app.use('/api/payments', paymentRoutes)
 app.use('/api/coupons',  couponRoutes)
+app.use('/api/rooms',    roomRoutes)   // ← Giữ chỗ phòng, chống đặt trùng
 
 // Health check
 app.get('/api/health', (_, res) => res.json({ status: 'ok' }))

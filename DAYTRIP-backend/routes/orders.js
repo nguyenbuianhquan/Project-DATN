@@ -6,6 +6,7 @@ import { requireAuth, requireAdmin } from '../middleware/requireAuth.js'
 const router = express.Router()
 
 // ── POST / — Tạo đơn hàng mới ────────────────────────────────────
+// Lớp bảo vệ thứ 2 chống đặt trùng: verify reservationId + transaction
 router.post('/', requireAuth, async (req, res) => {
     const {
         // thông tin dịch vụ
@@ -32,6 +33,9 @@ router.post('/', requireAuth, async (req, res) => {
         // booking ref (frontend tự sinh)
         bookingId,
 
+        // giữ chỗ — từ /api/rooms/reserve (chống đặt trùng)
+        reservationId,
+
         // thông tin khách hàng
         userName,
         userEmail,
@@ -57,10 +61,34 @@ router.post('/', requireAuth, async (req, res) => {
     // Payment status ban đầu ('pending' cho tất cả — kể cả at_property)
     const payStatus = 'pending'
 
+    // Dùng connection riêng để có thể dùng TRANSACTION
+    const conn = await db.getConnection()
     try {
-        // 1. Insert đơn hàng
+        await conn.beginTransaction()
+
+        // ── Lớp bảo vệ 2: Kiểm tra reservationId còn hợp lệ không ──────
+        // (Lớp bảo vệ 1 đã xảy ra ở /api/rooms/reserve khi user click chọn phòng)
+        if (reservationId) {
+            const [reservations] = await conn.query(
+                `SELECT id, status, expires_at
+                 FROM room_reservations
+                 WHERE id = ? AND user_id = ? AND status = 'holding' AND expires_at > NOW()
+                 FOR UPDATE`,   // Lock row để tránh race condition lúc checkout
+                [reservationId, req.user.userId]
+            )
+
+            if (reservations.length === 0) {
+                await conn.rollback()
+                return res.status(409).json({
+                    error: 'Phiên giữ chỗ đã hết hạn hoặc không hợp lệ. Vui lòng quay lại chọn phòng.',
+                    code:  'RESERVATION_EXPIRED',
+                })
+            }
+        }
+
+        // ── 1. Insert đơn hàng ──────────────────────────────────────────
         // Lưu ý: service_id được lưu dạng text (không có FK tới bảng services)
-        await db.query(
+        await conn.query(
             `INSERT INTO orders
                (id, booking_ref, user_id, item_name,
                 total_price, sub_total, tax, discount,
@@ -98,23 +126,31 @@ router.post('/', requireAuth, async (req, res) => {
             ]
         )
 
-        // 2. Tăng used_count nếu dùng coupon
+        // ── 2. Xác nhận reservation → 'confirmed' (phòng đã có chủ) ────
+        if (reservationId) {
+            await conn.query(
+                `UPDATE room_reservations SET status = 'confirmed' WHERE id = ?`,
+                [reservationId]
+            )
+        }
+
+        // ── 3. Tăng used_count nếu dùng coupon ──────────────────────────
         if (couponCode) {
-            await db.query(
+            await conn.query(
                 'UPDATE coupons SET used_count = used_count + 1 WHERE code = ?',
                 [couponCode.toUpperCase()]
             )
         }
 
-        // 3. Tạo bản ghi payment
-        await db.query(
+        // ── 4. Tạo bản ghi payment ──────────────────────────────────────
+        await conn.query(
             `INSERT INTO payments (id, order_id, user_id, amount, method, status)
              VALUES (?, ?, ?, ?, ?, ?)`,
             [uuidv4(), orderId, req.user.userId, payAmount, method, payStatus]
         )
 
-        // 4. Ghi log hoạt động
-        await db.query(
+        // ── 5. Ghi log hoạt động ────────────────────────────────────────
+        await conn.query(
             `INSERT INTO activity_logs (user_id, user_email, action, detail, ip_address)
              VALUES (?, ?, 'purchase', ?, ?)`,
             [
@@ -125,6 +161,9 @@ router.post('/', requireAuth, async (req, res) => {
             ]
         )
 
+        // ── Commit tất cả trong 1 transaction ───────────────────────────
+        await conn.commit()
+
         res.status(201).json({
             message:   'Order placed',
             orderId,
@@ -132,8 +171,11 @@ router.post('/', requireAuth, async (req, res) => {
         })
 
     } catch (err) {
+        await conn.rollback()
         console.error('[orders POST]', err)
         res.status(500).json({ error: err.message })
+    } finally {
+        conn.release()
     }
 })
 
