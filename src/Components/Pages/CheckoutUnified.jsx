@@ -270,6 +270,14 @@ const CheckoutUnified = () => {
     const handlePay = async () => {
         if (paying||!canPay) return;
 
+        // ── Debug log (sẽ xóa sau khi fix xong) ──
+        console.log('[handlePay] state at click:', {
+            payMode,
+            onlineMethod,
+            isOnlineGateway: (payMode === "online" || payMode === "deposit"),
+            payableNow: Math.round(payableNow),
+        });
+
         // Kiểm tra reservation còn hạn không trước khi submit
         if (reservation && reservExpired) {
             setPayError("Phiên giữ chỗ đã hết hạn. Vui lòng quay lại chọn phòng.");
@@ -277,50 +285,80 @@ const CheckoutUnified = () => {
         }
 
         setPaying(true); setPayError("");
-        try {
-            await saveOrder({
-                // thông tin khách hàng
-                userName:       form.fullName,
-                userEmail:      form.email,
-                phone:          form.phone,
-                notes:          form.notes,
-                specialRequest: form.notes,
 
-                // dịch vụ
-                location:       item?.location || "Điểm đến đã chọn",
-                title:          item?.title    || item?.name || "Dịch vụ",
-                serviceId:      item?.id       || null,
-                items:          item ? [{ name: item.title || "Dịch vụ", price: item.price }] : [],
+        // ── Dữ liệu đơn hàng dùng chung ──────────────────────────────
+        const orderPayload = {
+            userName:       form.fullName,
+            userEmail:      form.email,
+            phone:          form.phone,
+            notes:          form.notes,
+            specialRequest: form.notes,
+            location:       item?.location || "Điểm đến đã chọn",
+            title:          item?.title    || item?.name || "Dịch vụ",
+            serviceId:      item?.id       || null,
+            items:          item ? [{ name: item.title || "Dịch vụ", price: item.price }] : [],
+            date:           dateFrom,
+            checkOut:       dateTo,
+            subTotal:       Math.round(subtotal),
+            tax:            Math.round(tax),
+            total:          Math.round(discountedTotal),
+            discount:       Math.round(discount),
+            paymentTab:     payMode,
+            paymentMethod:  (payMode==="online"||payMode==="deposit") ? onlineMethod : "pay_at_property",
+            coupon:         coupon?.label  || null,
+            couponCode:     coupon ? couponCode : null,
+            bookingId,
+            reservationId:  reservation?.reservationId || null,
+        };
 
-                // ngày
-                date:           dateFrom,
-                checkOut:       dateTo,
-
-                // giá
-                subTotal:       Math.round(subtotal),
-                tax:            Math.round(tax),
-                total:          Math.round(discountedTotal),
-                discount:       Math.round(discount),
-
-                // thanh toán
-                paymentTab:     payMode,
-                paymentMethod:  (payMode==="online"||payMode==="deposit") ? onlineMethod : "pay_at_property",
-
-                // coupon
-                coupon:         coupon?.label    || null,
-                couponCode:     coupon ? couponCode : null,
-
-                // booking ref
-                bookingId,
-
-                // reservation token — lớp bảo vệ 2 chống đặt trùng
-                reservationId:  reservation?.reservationId || null,
-            });
-
-            // Xóa reservation khỏi storage sau khi đặt thành công
+        const clearStorage = () => {
             localStorage.removeItem("bookingItem");
             localStorage.removeItem("activeReservation");
+        };
 
+        try {
+            // ── Bước 1: Tạo đơn hàng trong DB ──────────────────────────
+            const orderResult = await saveOrder(orderPayload);
+            const orderId = orderResult?.orderId;
+
+            // ── Bước 2: Điều hướng theo phương thức thanh toán ──────────
+            const isOnlineGateway = (payMode === "online" || payMode === "deposit");
+
+            /* ── VNPay ── */
+            if (isOnlineGateway && onlineMethod === "vnpay") {
+                const result = await api.post("/payments/vnpay/create", {
+                    orderId,
+                    amount:    Math.round(payableNow),
+                    orderInfo: `DayTrip: ${item?.title || "Dich vu"} #${bookingId}`,
+                });
+                clearStorage();
+                window.location.href = result.payUrl;   // ← Redirect sang VNPay
+                return;
+            }
+
+            /* ── MoMo ── */
+            if (isOnlineGateway && onlineMethod === "momo") {
+                const result = await api.post("/payments/momo/create", {
+                    orderId,
+                    amount:    Math.round(payableNow),
+                    orderInfo: `DayTrip: ${item?.title || "Dich vu"}`,
+                });
+                clearStorage();
+                window.location.href = result.payUrl;   // ← Redirect sang MoMo
+                return;
+            }
+
+            /* ── Safety net: không bao giờ rơi vào flow "thẻ" nếu đang chọn MoMo/VNPay ──
+               Nếu tới đây mà gateway vẫn là momo/vnpay → có bug state, báo lỗi ngay */
+            if (isOnlineGateway && (onlineMethod === "momo" || onlineMethod === "vnpay")) {
+                console.error('[handlePay] BUG: reached fallthrough while onlineMethod =', onlineMethod);
+                setPayError(`Lỗi khởi tạo thanh toán ${onlineMethod === "momo" ? "MoMo" : "VNPay"}. Vui lòng thử lại.`);
+                return;
+            }
+
+            /* ── Thẻ / Thanh toán tại nơi / Đặt cọc card ──────────────
+               (Mock flow — vẫn coi là thành công ngay) */
+            clearStorage();
             navigate("/Tour_Booking_Summery", {
                 state: {
                     bookingId,
@@ -337,13 +375,13 @@ const CheckoutUnified = () => {
                     customerEmail: form.email,
                 },
             });
+
         } catch(err) {
             if (err.status === 409 || err.code === 'RESERVATION_EXPIRED') {
-                // Phiên giữ chỗ hết hạn hoặc phòng đã bị đặt bởi người khác
                 setReservExpired(true);
                 setPayError(err.message || "Phiên giữ chỗ đã hết hạn. Vui lòng quay lại chọn phòng.");
             } else {
-                setPayError("Lỗi hệ thống: "+(err.message||"Vui lòng thử lại."));
+                setPayError("Lỗi: " + (err.message || "Vui lòng thử lại."));
             }
         } finally { setPaying(false); }
     };

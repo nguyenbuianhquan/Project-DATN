@@ -3666,4 +3666,217 @@
   color: var(--secondary-color, #f6c948);
   margin-bottom: 6px;
 }
+
+/* ══════════════════════════════════════════════════════════
+   PAYMENT RETURN PAGE — pr-*
+   Trang hiển thị kết quả sau khi VNPay / MoMo redirect về
+════════════════════════════════════════════════════════════ */
+
+@keyframes pr-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pr-fade-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Wrapper toàn trang ── */
+.pr-root {
+  min-height: 100vh;
+  background: var(--section-bg, #12151e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 72px 16px 80px;
+}
+
+/* ── Card trung tâm ── */
+.pr-card {
+  width: 100%;
+  max-width: 480px;
+  background: #1c2333;
+  border: 1px solid rgba(248,250,252,0.07);
+  border-radius: 20px;
+  padding: 44px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.45);
+  animation: pr-fade-up 0.45s ease both;
+}
+
+/* ── Icon lớn (success / fail) ── */
+.pr-icon-wrap {
+  margin-bottom: 22px;
+}
+
+/* ── Tiêu đề ── */
+.pr-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.pr-title.pr-success  { color: #4ade80; }
+.pr-title.pr-failed   { color: #f87171; }
+.pr-title.pr-cancelled{ color: #fbbf24; }
+
+/* ── Mô tả ── */
+.pr-subtitle {
+  font-size: 0.95rem;
+  color: #94a3b8;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.pr-subtitle strong { color: #cbd5e1; }
+
+/* ── Badge cổng thanh toán ── */
+.pr-gateway-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(124,109,250,0.14);
+  border: 1px solid rgba(124,109,250,0.3);
+  color: #a78bfa;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 22px;
+}
+.pr-gateway-badge.pr-badge-fail {
+  background: rgba(239,68,68,0.1);
+  border-color: rgba(239,68,68,0.25);
+  color: #fca5a5;
+}
+
+/* ── Số tiền ── */
+.pr-amount-block {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+.pr-amount-label {
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+.pr-amount-val {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #4ade80;
+}
+
+/* ── Chính sách ── */
+.pr-policies {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.pr-policy-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.87rem;
+  color: #94a3b8;
+}
+.pr-policy-item i {
+  color: #4ade80;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* ── Hộp hỗ trợ (failure) ── */
+.pr-help-box {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(96,165,250,0.08);
+  border: 1px solid rgba(96,165,250,0.2);
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: #93c5fd;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+.pr-help-box > i {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.pr-help-box strong { color: #bfdbfe; }
+.pr-help-box em     { color: #fbbf24; font-style: normal; }
+
+/* ── Nút hành động ── */
+.pr-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pr-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 20px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+.pr-btn-primary {
+  background: linear-gradient(135deg, #017b6e, #02a899);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(1,123,110,0.35);
+}
+.pr-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(1,123,110,0.45);
+}
+.pr-btn-ghost {
+  background: rgba(255,255,255,0.05);
+  color: #94a3b8;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.pr-btn-ghost:hover {
+  background: rgba(255,255,255,0.09);
+  color: #cbd5e1;
+}
+
+/* ── Spinner loading ── */
+.pr-spinner {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 4px solid rgba(255,255,255,0.08);
+  border-top-color: #7c6dfa;
+  animation: pr-spin 0.85s linear infinite;
+  margin: 0 auto 16px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 520px) {
+  .pr-card {
+    padding: 32px 20px 28px;
+    border-radius: 16px;
+  }
+  .pr-title { font-size: 1.35rem; }
+}
 .ck-svc-room-badge i { font-size: 0.82rem; }

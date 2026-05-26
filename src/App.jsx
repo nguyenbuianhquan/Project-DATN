@@ -27,6 +27,7 @@ import Account from './Components/Pages/Account';
 import UserDatabase from './Components/Pages/UserDatabase';
 import AdminPanel from './Components/Pages/AdminPanel';
 import ResetPasswordPage from './Components/Pages/ResetPasswordPage';
+import PaymentReturn     from './Components/Pages/PaymentReturn';
 import { GuestOnlyRoute, ProtectedRoute } from './Components/Auth/ProtectedRoute';
 import { AdminProvider } from './Context/AdminContext';
 
@@ -105,6 +106,8 @@ function AppLayout() {
         <Route path="/booking-info" element={<CheckoutPage />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/Tour_Booking_Summery" element={<BookingConfirmation />} />
+        {/* Trang nhận kết quả từ VNPay / MoMo sau khi redirect về */}
+        <Route path="/payment-return" element={<PaymentReturn />} />
         <Route path="/tours" element={<TourListPage />} />
         <Route path="/hotels" element={<HotelDetailPage />} />
         <Route path="/transport" element={<TransportDetailPage />} />
