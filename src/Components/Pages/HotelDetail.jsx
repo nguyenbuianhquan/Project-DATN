@@ -103,15 +103,19 @@ const HotelDetail = () => {
 
     const handleBook = () => {
         if (!currentUser) { navigate('/signin'); return; }
-        localStorage.setItem('bookingItem', JSON.stringify({
-            id:       hotel.id,
-            title:    hotel.name,
-            image:    hotel.image,
-            price:    Math.round(total * 1.1),
-            quantity: 1,
-            location: hotel.location || 'Điểm đến đã chọn',
+
+        // Lưu thông tin đặt phòng (ngày, khách, phòng) để trang chọn phòng đọc
+        localStorage.setItem('bookingMeta', JSON.stringify({
+            hotelId:  hotel.id,
+            checkin,
+            checkout,
+            rooms,      // số lượng phòng
+            adults,
+            children,
         }));
-        navigate('/checkout');
+
+        // Chuyển sang trang chọn phòng
+        navigate(`/hotels/${hotel.id}/rooms`);
     };
 
     return (

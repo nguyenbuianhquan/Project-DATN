@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAdmin } from "../../Context/AdminContext";
-import { updateOrderStatus, deleteUserById, updateUserRole, toggleUserLock, resetUserPassword, getRegisteredUsers, getOrders } from "../../lib/authStorage";
+import { updateOrderStatus, deleteUserById, updateUserRole, toggleUserLock, resetUserPassword, getRegisteredUsers, getOrders, getUserOrders, editUserByAdmin } from "../../lib/authStorage";
 import toursJson from "../../../src/Data/Tours.json";
 import hotelsJson from "../../../src/Data/Hotel.json";
 import transportJson from "../../../src/Data/Transport.json";
@@ -416,11 +416,13 @@ const OverviewTab = ({ users, orders }) => {
     const todayStr     = now.toDateString();
     const ydayStr      = new Date(now - 86400000).toDateString();
 
-    const revenue      = orders.reduce((s, o) => s + (Number(o.total) || 0), 0);
+    // Chỉ tính doanh thu từ đơn không bị hủy
+    const paidOrders   = orders.filter(o => o.status !== "cancelled");
+    const revenue      = paidOrders.reduce((s, o) => s + (Number(o.total) || 0), 0);
     const todayOrders  = orders.filter(o => o.createdAt && new Date(o.createdAt).toDateString() === todayStr);
-    const ydayRevenue  = orders.filter(o => o.createdAt && new Date(o.createdAt).toDateString() === ydayStr)
+    const ydayRevenue  = orders.filter(o => o.createdAt && new Date(o.createdAt).toDateString() === ydayStr && o.status !== "cancelled")
                                .reduce((s, o) => s + (Number(o.total) || 0), 0);
-    const todayRevenue = todayOrders.reduce((s, o) => s + (Number(o.total) || 0), 0);
+    const todayRevenue = todayOrders.filter(o => o.status !== "cancelled").reduce((s, o) => s + (Number(o.total) || 0), 0);
     const completedCnt = orders.filter(o => o.status === "completed" || o.status === "confirmed").length;
     const completionRate = orders.length ? Math.round(completedCnt / orders.length * 100) : 0;
     const activeUsers  = users.filter(u => u.lastLoginAt && (Date.now() - new Date(u.lastLoginAt)) / 3600000 < 24);
@@ -630,137 +632,395 @@ const OverviewTab = ({ users, orders }) => {
 };
 
 // ── Users tab ─────────────────────────────────────────────────────
-const UsersTab = ({ users, currentUserId, onDelete, onChangeRole, onToggleLock }) => {
-    const [search, setSearch] = useState("");
-    const [resetingId, setResetingId] = useState(null);
+const UsersTab = ({ currentUserId, onUsersChanged }) => {
+    const [users,        setUsers]        = useState([]);
+    const [loading,      setLoading]      = useState(true);
+    const [search,       setSearch]       = useState("");
+    const [roleFilter,   setRoleFilter]   = useState("all");
+    const [statusFilter, setStatusFilter] = useState("all");
+    const [dateFilter,   setDateFilter]   = useState("");
+    const [page,         setPage]         = useState(1);
+    const [detailUser,   setDetailUser]   = useState(null);
+    const [detailOrders, setDetailOrders] = useState([]);
+    const [loadOrders,   setLoadOrders]   = useState(false);
+    const [editUser,     setEditUser]     = useState(null);
+    const [editForm,     setEditForm]     = useState({});
+    const [savingEdit,   setSavingEdit]   = useState(false);
+    const [confirmDel,   setConfirmDel]   = useState(null);
+    const PAGE_SIZE = 10;
 
-    const handleSendReset = async (u) => {
-        setResetingId(u.id);
+    const reload = async () => {
+        setLoading(true);
         try {
-            await resetUserPassword(u.email);
-            toast.success(`Đã gửi link đặt lại mật khẩu tới ${u.email}`);
-        } catch (err) {
-            toast.error(err.message || "Gửi email thất bại.");
-        } finally {
-            setResetingId(null);
-        }
+            const list = await getRegisteredUsers();
+            setUsers(list);
+            onUsersChanged?.(list);
+        } catch {}
+        finally { setLoading(false); }
     };
+    useEffect(() => { reload(); }, []);
+
+    const openDetail = async (user) => {
+        setDetailUser(user);
+        setLoadOrders(true);
+        try {
+            const orders = await getUserOrders(user.id);
+            setDetailOrders(Array.isArray(orders) ? orders : []);
+        } catch { setDetailOrders([]); }
+        finally { setLoadOrders(false); }
+    };
+
     const adminCount = users.filter(u => u.role === "admin").length;
-    const filtered = users.filter(u =>
-        u.fullName.toLowerCase().includes(search.toLowerCase()) ||
-        u.email.toLowerCase().includes(search.toLowerCase())
-    );
+    const filtered = users.filter(u => {
+        const q = search.toLowerCase();
+        const matchQ      = !q || u.fullName.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || (u.phone||"").includes(q);
+        const matchRole   = roleFilter   === "all" || u.role === roleFilter;
+        const matchStatus = statusFilter === "all" ||
+            (statusFilter === "active" && !u.isLocked) ||
+            (statusFilter === "locked" && u.isLocked);
+        const matchDate   = !dateFilter || (u.createdAt && String(u.createdAt).slice(0,7) === dateFilter);
+        return matchQ && matchRole && matchStatus && matchDate;
+    });
+
+    const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+    const paged      = filtered.slice((page-1)*PAGE_SIZE, page*PAGE_SIZE);
+
+    const openEdit = (user) => {
+        setEditUser(user);
+        setEditForm({ fullName: user.fullName, phone: user.phone||"", homeCity: user.homeCity||"" });
+    };
+    const handleSaveEdit = async () => {
+        setSavingEdit(true);
+        try {
+            await editUserByAdmin(editUser.id, editForm);
+            toast.success("Đã cập nhật thông tin người dùng!");
+            setEditUser(null);
+            await reload();
+        } catch { toast.error("Cập nhật thất bại!"); }
+        finally { setSavingEdit(false); }
+    };
+
+    const doDelete = async () => {
+        try {
+            await deleteUserById(confirmDel.id);
+            toast.success("Đã xóa người dùng!");
+            setConfirmDel(null);
+            await reload();
+        } catch { toast.error("Xóa thất bại!"); }
+    };
+
+    const handleRole = async (userId, newRole) => {
+        await updateUserRole(userId, newRole);
+        toast.success("Đã cập nhật vai trò!");
+        await reload();
+    };
+    const handleLock = async (userId, locked) => {
+        await toggleUserLock(userId, locked);
+        toast.success(locked ? "Đã khóa tài khoản!" : "Đã mở khóa tài khoản!");
+        await reload();
+    };
+
+    const totalSpending = detailOrders
+        .filter(o => o.status !== "cancelled")
+        .reduce((s, o) => s + (Number(o.total)||0), 0);
+
+    const summaryStats = [
+        { label: "Tổng users",  value: users.length,                            color: "#f26f55" },
+        { label: "Admin",       value: adminCount,                              color: "#8b5cf6" },
+        { label: "Đang khóa",  value: users.filter(u => u.isLocked).length,    color: "#ef4444" },
+        { label: "Online 24h", value: users.filter(u => u.isOnline).length,    color: "#22c55e" },
+    ];
 
     return (
+        <>
         <div className="adm-card">
             <div className="adm-card-header">
-                <span className="adm-card-title">
-                    <i className="ri-team-line me-2"></i>Người dùng ({users.length})
-                </span>
-                <input
-                    className="adm-search"
-                    placeholder="Tìm tên / email..."
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                />
+                <span className="adm-card-title"><i className="ri-team-line me-2"></i>Người dùng ({users.length})</span>
             </div>
-            <div className="table-responsive">
-                <table className="adm-table">
-                    <thead>
-                        <tr>
-                            <th>Người dùng</th>
-                            <th>Vai trò</th>
-                            <th>Trạng thái</th>
-                            <th>Đăng nhập gần nhất</th>
-                            <th>Điện thoại</th>
-                            <th>Thành phố</th>
-                            <th>Ngày tạo</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filtered.map(u => {
-                            const isSelf = u.id === currentUserId;
-                            const isLastAdmin = u.role === "admin" && adminCount === 1;
-                            const canAct = !isSelf && !isLastAdmin;
-                            const act = getActivity(u);
-                            return (
-                                <tr key={u.id} style={u.isLocked ? { opacity: 0.55 } : {}}>
-                                    <td>
-                                        <div className="adm-user-cell">
-                                            <div className="adm-user-avatar" style={{ position: "relative", ...(u.isLocked ? { background: "#ef444422", border: "1px solid #ef4444" } : {}) }}>
-                                                {u.initials}
-                                                <span className={`adm-status-dot${act.pulse ? " adm-pulse" : ""}`} style={{ background: act.color }}></span>
-                                            </div>
-                                            <div>
-                                                <div className="adm-user-name">
-                                                    {u.fullName}
-                                                    {isSelf && <span className="adm-self-tag"> (bạn)</span>}
+
+            {/* ── Stats ── */}
+            <div style={{ display:"flex", gap:"0.6rem", padding:"0 1rem 1rem", flexWrap:"wrap" }}>
+                {summaryStats.map(s => (
+                    <div key={s.label} style={{ flex:"1 1 90px", background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:10, padding:"0.65rem 1rem", display:"flex", alignItems:"center", gap:10 }}>
+                        <div style={{ width:8, height:8, borderRadius:"50%", background:s.color, flexShrink:0 }} />
+                        <div>
+                            <div style={{ fontSize:"1.1rem", fontWeight:700, color:"#fff" }}>{s.value}</div>
+                            <div style={{ fontSize:"0.67rem", color:"rgba(255,255,255,0.38)" }}>{s.label}</div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* ── Filter bar ── */}
+            <div style={{ display:"flex", gap:"0.5rem", padding:"0 1rem 1rem", flexWrap:"wrap", alignItems:"center" }}>
+                <div style={{ position:"relative", flex:"1 1 200px" }}>
+                    <i className="ri-search-line" style={{ position:"absolute", left:10, top:"50%", transform:"translateY(-50%)", color:"rgba(255,255,255,0.3)", fontSize:"0.9rem" }} />
+                    <input className="adm-search" style={{ width:"100%", paddingLeft:"2rem", boxSizing:"border-box" }}
+                        placeholder="Tìm tên, email, điện thoại..."
+                        value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} />
+                </div>
+                <select className="adm-search" style={{ width:"auto" }}
+                    value={roleFilter} onChange={e => { setRoleFilter(e.target.value); setPage(1); }}>
+                    <option value="all">Tất cả vai trò</option>
+                    <option value="admin">Admin</option>
+                    <option value="traveler">Traveler</option>
+                </select>
+                <select className="adm-search" style={{ width:"auto" }}
+                    value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}>
+                    <option value="all">Tất cả trạng thái</option>
+                    <option value="active">Đang hoạt động</option>
+                    <option value="locked">Đã khóa</option>
+                </select>
+                <input type="month" className="adm-search" style={{ width:"auto" }}
+                    value={dateFilter} onChange={e => { setDateFilter(e.target.value); setPage(1); }} />
+                {(search || roleFilter !== "all" || statusFilter !== "all" || dateFilter) && (
+                    <button className="adm-cancel-btn" style={{ padding:"0.4rem 0.75rem", fontSize:"0.75rem" }}
+                        onClick={() => { setSearch(""); setRoleFilter("all"); setStatusFilter("all"); setDateFilter(""); setPage(1); }}>
+                        <i className="ri-close-line me-1"></i>Xóa bộ lọc
+                    </button>
+                )}
+            </div>
+
+            {/* ── Table ── */}
+            {loading ? (
+                <p style={{ padding:"2rem", color:"rgba(255,255,255,0.35)", textAlign:"center" }}>Đang tải...</p>
+            ) : (
+                <div className="table-responsive">
+                    <table className="adm-table">
+                        <thead>
+                            <tr>
+                                <th>Người dùng</th>
+                                <th>Vai trò</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày đăng ký</th>
+                                <th>Đăng nhập gần nhất</th>
+                                <th>Điện thoại</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {paged.length === 0 ? (
+                                <tr><td colSpan={7} style={{ textAlign:"center", padding:"2rem", color:"rgba(255,255,255,0.3)" }}>Không có người dùng nào phù hợp</td></tr>
+                            ) : paged.map(u => {
+                                const isSelf     = u.id === currentUserId;
+                                const isLastAdm  = u.role === "admin" && adminCount === 1;
+                                const canAct     = !isSelf && !isLastAdm;
+                                const act        = getActivity(u);
+                                return (
+                                    <tr key={u.id} style={u.isLocked ? { opacity:0.6 } : {}}>
+                                        <td>
+                                            <div className="adm-user-cell">
+                                                <div className="adm-user-avatar" style={{ position:"relative", ...(u.isLocked?{background:"#ef444422",border:"1px solid #ef4444"}:{}) }}>
+                                                    {u.initials}
+                                                    <span className={`adm-status-dot${act.pulse?" adm-pulse":""}`} style={{ background:act.color }} />
                                                 </div>
-                                                <div className="adm-user-email">{u.email}</div>
+                                                <div>
+                                                    <div className="adm-user-name">{u.fullName}{isSelf&&<span className="adm-self-tag"> (bạn)</span>}</div>
+                                                    <div className="adm-user-email">{u.email}</div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td><span className={`adm-role-badge ${u.role}`}>{u.role === "admin" ? "Admin" : "Traveler"}</span></td>
-                                    <td>
-                                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "0.78rem", color: act.color, fontWeight: 600 }}>
-                                            <span style={{ width: 7, height: 7, borderRadius: "50%", background: act.color, display: "inline-block", flexShrink: 0 }}></span>
-                                            {act.label}
-                                        </span>
-                                        {u.isLocked && <span style={{ display: "block", fontSize: "0.72rem", color: "#ef4444", marginTop: 2 }}><i className="ri-lock-fill me-1"></i>Đã khóa</span>}
-                                    </td>
-                                    <td style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.5)" }}>{fmtDate(u.lastLoginAt) || "—"}</td>
-                                    <td>{u.phone || "—"}</td>
-                                    <td>{u.homeCity || "—"}</td>
-                                    <td>{fmtDate(u.createdAt)}</td>
-                                    <td>
-                                        <button
-                                            className="adm-action-btn info"
-                                            title="Gửi email đặt lại mật khẩu"
-                                            disabled={resetingId === u.id}
-                                            onClick={() => handleSendReset(u)}
-                                        >
-                                            {resetingId === u.id
-                                                ? <i className="ri-loader-4-line adm-spin"></i>
-                                                : <i className="ri-mail-send-line"></i>
-                                            }
-                                        </button>
-                                        {canAct && (
-                                            <button
-                                                className="adm-action-btn success"
-                                                title={u.role === "admin" ? "Hạ xuống Traveler" : "Thăng lên Admin"}
-                                                onClick={() => onChangeRole(u.id, u.role === "admin" ? "traveler" : "admin")}
-                                            >
-                                                <i className={`ri-arrow-${u.role === "admin" ? "down" : "up"}-line`}></i>
+                                        </td>
+                                        <td><span className={`adm-role-badge ${u.role}`}>{u.role==="admin"?"Admin":"Traveler"}</span></td>
+                                        <td>
+                                            <span style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:"0.78rem", color:act.color, fontWeight:600 }}>
+                                                <span style={{ width:7, height:7, borderRadius:"50%", background:act.color, display:"inline-block" }} />
+                                                {act.label}
+                                            </span>
+                                            {u.isLocked && <span style={{ display:"block", fontSize:"0.7rem", color:"#ef4444", marginTop:2 }}><i className="ri-lock-fill me-1"></i>Đã khóa</span>}
+                                        </td>
+                                        <td style={{ fontSize:"0.8rem", color:"rgba(255,255,255,0.5)" }}>{fmtDate(u.createdAt)}</td>
+                                        <td style={{ fontSize:"0.8rem", color:"rgba(255,255,255,0.5)" }}>{fmtDate(u.lastLoginAt)||"—"}</td>
+                                        <td>{u.phone||"—"}</td>
+                                        <td>
+                                            <button className="adm-action-btn info" title="Xem chi tiết" onClick={() => openDetail(u)}>
+                                                <i className="ri-eye-line"></i>
                                             </button>
-                                        )}
-                                        {canAct && (
-                                            <button
-                                                className={`adm-action-btn ${u.isLocked ? "success" : "warn"}`}
-                                                title={u.isLocked ? "Mở khóa tài khoản" : "Khóa tài khoản"}
-                                                onClick={() => onToggleLock(u.id, !u.isLocked)}
-                                            >
-                                                <i className={`ri-${u.isLocked ? "lock-unlock-line" : "lock-line"}`}></i>
+                                            <button className="adm-action-btn" title="Chỉnh sửa" onClick={() => openEdit(u)}>
+                                                <i className="ri-pencil-line"></i>
                                             </button>
-                                        )}
-                                        {canAct && (
-                                            <button
-                                                className="adm-action-btn danger"
-                                                title="Xóa người dùng"
-                                                onClick={() => onDelete(u)}
-                                            >
-                                                <i className="ri-delete-bin-line"></i>
-                                            </button>
-                                        )}
-                                        {!canAct && <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.75rem" }}></span>}
-                                    </td>
-                                </tr>
+                                            {canAct && (
+                                                <button className="adm-action-btn success"
+                                                    title={u.role==="admin"?"Hạ xuống Traveler":"Thăng lên Admin"}
+                                                    onClick={() => handleRole(u.id, u.role==="admin"?"traveler":"admin")}>
+                                                    <i className={`ri-arrow-${u.role==="admin"?"down":"up"}-line`}></i>
+                                                </button>
+                                            )}
+                                            {canAct && (
+                                                <button className={`adm-action-btn ${u.isLocked?"success":"warn"}`}
+                                                    title={u.isLocked?"Mở khóa":"Khóa tài khoản"}
+                                                    onClick={() => handleLock(u.id, !u.isLocked)}>
+                                                    <i className={`ri-${u.isLocked?"lock-unlock-line":"lock-line"}`}></i>
+                                                </button>
+                                            )}
+                                            {canAct && (
+                                                <button className="adm-action-btn danger" title="Xóa người dùng"
+                                                    onClick={() => setConfirmDel(u)}>
+                                                    <i className="ri-delete-bin-line"></i>
+                                                </button>
+                                            )}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+
+            {/* ── Pagination ── */}
+            {totalPages > 1 && (
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0.75rem 1rem", borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+                    <span style={{ fontSize:"0.78rem", color:"rgba(255,255,255,0.35)" }}>
+                        Hiển thị {(page-1)*PAGE_SIZE+1}–{Math.min(page*PAGE_SIZE, filtered.length)} / {filtered.length} người dùng
+                    </span>
+                    <div style={{ display:"flex", gap:4 }}>
+                        <button className="adm-action-btn" disabled={page===1} onClick={() => setPage(p=>p-1)}>
+                            <i className="ri-arrow-left-s-line"></i>
+                        </button>
+                        {Array.from({ length: Math.min(totalPages,5) }, (_,i) => {
+                            const pg = page<=3 ? i+1 : page>=totalPages-2 ? totalPages-4+i : page-2+i;
+                            if (pg<1||pg>totalPages) return null;
+                            return (
+                                <button key={pg} className="adm-action-btn"
+                                    style={pg===page?{background:"#f26f55",color:"#fff",border:"1px solid #f26f55"}:{}}
+                                    onClick={() => setPage(pg)}>{pg}</button>
                             );
                         })}
-                    </tbody>
-                </table>
-            </div>
+                        <button className="adm-action-btn" disabled={page===totalPages} onClick={() => setPage(p=>p+1)}>
+                            <i className="ri-arrow-right-s-line"></i>
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
+
+        {/* ── Modal: Chi tiết user ── */}
+        {detailUser && (
+            <div className="adm-modal-overlay" onClick={() => setDetailUser(null)}>
+                <div className="adm-modal" style={{ maxWidth:680, width:"95vw" }} onClick={e => e.stopPropagation()}>
+                    <div className="adm-modal-header">
+                        <span className="adm-modal-title"><i className="ri-user-3-line me-2"></i>Chi tiết người dùng</span>
+                        <button className="adm-modal-close" onClick={() => setDetailUser(null)}><i className="ri-close-line"></i></button>
+                    </div>
+                    <div className="adm-modal-body" style={{ maxHeight:"72vh", overflowY:"auto" }}>
+                        {/* Profile */}
+                        <div style={{ display:"flex", gap:16, alignItems:"flex-start", paddingBottom:"1rem", borderBottom:"1px solid rgba(255,255,255,0.07)", marginBottom:"1rem" }}>
+                            <div className="adm-user-avatar" style={{ width:56, height:56, fontSize:"1.2rem", flexShrink:0, position:"relative", ...(detailUser.isLocked?{background:"#ef444422",border:"1px solid #ef4444"}:{}) }}>
+                                {detailUser.initials}
+                                <span className="adm-status-dot" style={{ background:getActivity(detailUser).color }} />
+                            </div>
+                            <div style={{ flex:1, minWidth:0 }}>
+                                <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
+                                    <span style={{ fontWeight:700, fontSize:"1.05rem", color:"#fff" }}>{detailUser.fullName}</span>
+                                    <span className={`adm-role-badge ${detailUser.role}`}>{detailUser.role==="admin"?"Admin":"Traveler"}</span>
+                                    {detailUser.isLocked && <span style={{ fontSize:"0.72rem", background:"rgba(239,68,68,0.15)", color:"#ef4444", padding:"2px 8px", borderRadius:20, border:"1px solid rgba(239,68,68,0.3)" }}><i className="ri-lock-fill me-1"></i>Đã khóa</span>}
+                                </div>
+                                <div style={{ color:"rgba(255,255,255,0.45)", fontSize:"0.85rem", marginTop:4 }}>{detailUser.email}</div>
+                                <div style={{ display:"flex", gap:16, marginTop:8, flexWrap:"wrap" }}>
+                                    {detailUser.phone    && <span style={{ fontSize:"0.8rem", color:"rgba(255,255,255,0.5)" }}><i className="ri-phone-line me-1"></i>{detailUser.phone}</span>}
+                                    {detailUser.homeCity && <span style={{ fontSize:"0.8rem", color:"rgba(255,255,255,0.5)" }}><i className="ri-map-pin-2-line me-1"></i>{detailUser.homeCity}</span>}
+                                    <span style={{ fontSize:"0.8rem", color:"rgba(255,255,255,0.5)" }}><i className="ri-calendar-line me-1"></i>Tham gia {fmtDate(detailUser.createdAt)}</span>
+                                    {detailUser.lastLoginAt && <span style={{ fontSize:"0.8rem", color:"rgba(255,255,255,0.5)" }}><i className="ri-time-line me-1"></i>Đăng nhập {fmtDate(detailUser.lastLoginAt)}</span>}
+                                </div>
+                            </div>
+                        </div>
+
+                        {loadOrders ? (
+                            <p style={{ color:"rgba(255,255,255,0.35)", textAlign:"center", padding:"1rem 0" }}>Đang tải lịch sử...</p>
+                        ) : (
+                            <>
+                                {/* Spending stats */}
+                                <div style={{ display:"flex", gap:"0.6rem", marginBottom:"1rem", flexWrap:"wrap" }}>
+                                    {[
+                                        { icon:"ri-shopping-bag-line",       label:"Tổng đơn",   value: detailOrders.length,                                                                    color:"#f26f55" },
+                                        { icon:"ri-money-dollar-circle-line", label:"Chi tiêu",   value: fmtVNDShort(totalSpending),                                                             color:"#22c55e" },
+                                        { icon:"ri-check-double-line",        label:"Hoàn tất",   value: detailOrders.filter(o=>o.status==="completed"||o.status==="confirmed").length,           color:"#6366f1" },
+                                        { icon:"ri-close-circle-line",        label:"Đã hủy",     value: detailOrders.filter(o=>o.status==="cancelled").length,                                   color:"#ef4444" },
+                                    ].map(s => (
+                                        <div key={s.label} style={{ flex:"1 1 100px", background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:10, padding:"0.7rem 1rem", display:"flex", alignItems:"center", gap:10 }}>
+                                            <i className={s.icon} style={{ color:s.color, fontSize:"1.2rem", flexShrink:0 }} />
+                                            <div>
+                                                <div style={{ fontSize:"1rem", fontWeight:700, color:"#fff" }}>{s.value}</div>
+                                                <div style={{ fontSize:"0.67rem", color:"rgba(255,255,255,0.38)" }}>{s.label}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Booking history */}
+                                <div style={{ fontWeight:700, fontSize:"0.8rem", color:"rgba(255,255,255,0.5)", marginBottom:8, textTransform:"uppercase", letterSpacing:"0.05em" }}>
+                                    <i className="ri-history-line me-2"></i>Lịch sử đặt dịch vụ
+                                </div>
+                                {detailOrders.length === 0 ? (
+                                    <p style={{ color:"rgba(255,255,255,0.25)", fontSize:"0.82rem", textAlign:"center", padding:"1.5rem 0" }}>Chưa có đơn đặt nào</p>
+                                ) : (
+                                    <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                                        {detailOrders.map(o => {
+                                            const st = getStatus(o.status);
+                                            return (
+                                                <div key={o.id} style={{ display:"flex", alignItems:"center", gap:12, padding:"10px 14px", background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:10 }}>
+                                                    <div style={{ flex:1, minWidth:0 }}>
+                                                        <div style={{ fontWeight:600, fontSize:"0.85rem", color:"#fff", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
+                                                            {o.itemName || o.location || "Dịch vụ"}
+                                                        </div>
+                                                        <div style={{ fontSize:"0.72rem", color:"rgba(255,255,255,0.35)", marginTop:2 }}>
+                                                            {o.paymentMethod || "—"} · {new Date(o.created_at||o.createdAt||Date.now()).toLocaleDateString("vi-VN")}
+                                                        </div>
+                                                    </div>
+                                                    <div style={{ textAlign:"right", flexShrink:0 }}>
+                                                        <div style={{ fontWeight:700, color:"#f26f55", fontSize:"0.88rem" }}>{fmtVNDShort(Number(o.total||0))}</div>
+                                                        <span style={{ fontSize:"0.68rem", fontWeight:600, padding:"2px 8px", borderRadius:20, background:st.bg, color:st.color, border:`1px solid ${st.border}`, whiteSpace:"nowrap" }}>
+                                                            {st.label}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                    <div className="adm-modal-footer">
+                        <button className="adm-cancel-btn" onClick={() => setDetailUser(null)}>Đóng</button>
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {/* ── Modal: Chỉnh sửa user ── */}
+        {editUser && (
+            <Modal title={`Chỉnh sửa: ${editUser.fullName}`} onClose={() => setEditUser(null)} onSave={handleSaveEdit}>
+                <div className="adm-modal-grid">
+                    <div className="adm-form-field" style={{ gridColumn:"1 / -1" }}>
+                        <label className="adm-form-label">Họ và tên *</label>
+                        <input className="adm-form-input" value={editForm.fullName}
+                            onChange={e => setEditForm(p => ({ ...p, fullName: e.target.value }))} />
+                    </div>
+                    <div className="adm-form-field">
+                        <label className="adm-form-label">Điện thoại</label>
+                        <input className="adm-form-input" value={editForm.phone}
+                            onChange={e => setEditForm(p => ({ ...p, phone: e.target.value }))} />
+                    </div>
+                    <div className="adm-form-field">
+                        <label className="adm-form-label">Thành phố</label>
+                        <input className="adm-form-input" value={editForm.homeCity}
+                            onChange={e => setEditForm(p => ({ ...p, homeCity: e.target.value }))} />
+                    </div>
+                </div>
+                {savingEdit && <p style={{ color:"rgba(255,255,255,0.4)", fontSize:"0.8rem", marginTop:8 }}>Đang lưu...</p>}
+            </Modal>
+        )}
+
+        {/* ── Confirm xóa ── */}
+        {confirmDel && (
+            <Confirm
+                message={`Xóa tài khoản "${confirmDel.fullName}"? Hành động này không thể hoàn tác.`}
+                onConfirm={doDelete}
+                onCancel={() => setConfirmDel(null)}
+            />
+        )}
+        </>
     );
 };
 
@@ -932,12 +1192,13 @@ const CrudTab = ({ config }) => {
 // ── Orders tab ────────────────────────────────────────────────────
 const OrdersTab = () => {
     const { firebaseReady } = useAdmin();
-    const [orders,       setOrders]       = useState([]);
-    const [loading,      setLoading]      = useState(true);
-    const [search,       setSearch]       = useState("");
-    const [statusFilter, setStatusFilter] = useState("all");
-    const [expand,       setExpand]       = useState(null);
-    const [updating,     setUpdating]     = useState(null);
+    const [orders,        setOrders]        = useState([]);
+    const [loading,       setLoading]       = useState(true);
+    const [search,        setSearch]        = useState("");
+    const [statusFilter,  setStatusFilter]  = useState("all");
+    const [expand,        setExpand]        = useState(null);
+    const [updating,      setUpdating]      = useState(null);
+    const [cancelConfirm, setCancelConfirm] = useState(null); // { id, userName }
     const prevCount = useRef(null);
 
     useEffect(() => {
@@ -955,6 +1216,16 @@ const OrdersTab = () => {
     }, []);
 
     const handleStatusChange = async (orderId, newStatus) => {
+        // Nếu hủy đơn → hiện confirm dialog
+        if (newStatus === "cancelled") {
+            const order = orders.find(o => o.id === orderId);
+            setCancelConfirm({ id: orderId, userName: order?.userName || "khách hàng" });
+            return;
+        }
+        applyStatusChange(orderId, newStatus);
+    };
+
+    const applyStatusChange = async (orderId, newStatus) => {
         setUpdating(orderId);
         try {
             await updateOrderStatus(orderId, newStatus);
@@ -965,6 +1236,12 @@ const OrdersTab = () => {
         } finally {
             setUpdating(null);
         }
+    };
+
+    const confirmCancel = async () => {
+        const { id } = cancelConfirm;
+        setCancelConfirm(null);
+        await applyStatusChange(id, "cancelled");
     };
 
     const filtered = orders
@@ -1008,6 +1285,30 @@ const OrdersTab = () => {
                     />
                 </div>
             </div>
+
+            {/* ── Cancel confirmation dialog ── */}
+            {cancelConfirm && (
+                <div className="adm-confirm-overlay">
+                    <div className="adm-confirm-box">
+                        <div className="adm-confirm-icon" style={{ color: "#ef4444" }}>
+                            <i className="ri-close-circle-line"></i>
+                        </div>
+                        <div className="adm-confirm-title">Xác nhận hủy đơn</div>
+                        <div className="adm-confirm-desc">
+                            Bạn có chắc muốn hủy đơn hàng của <strong>{cancelConfirm.userName}</strong>?<br />
+                            <span style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.45)", marginTop: 4, display: "block" }}>
+                                Đơn bị hủy sẽ không được tính vào doanh thu.
+                            </span>
+                        </div>
+                        <div className="adm-confirm-actions">
+                            <button className="adm-cancel-btn" onClick={() => setCancelConfirm(null)}>Không hủy</button>
+                            <button className="adm-delete-btn" onClick={confirmCancel}>
+                                <i className="ri-close-circle-line"></i> Xác nhận hủy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {loading ? (
                 <p style={{ padding: "2rem", color: "rgba(255,255,255,0.35)", textAlign: "center" }}>
@@ -1093,7 +1394,7 @@ const OrdersTab = () => {
                                                                     <i className="ri-restart-line"></i> Khôi phục
                                                                 </button>
                                                             )}
-                                                            {o.status !== "cancelled" && o.status !== "completed" && (
+                                                                                            {o.status !== "cancelled" && o.status !== "completed" && (
                                                                 <button
                                                                     className="adm-order-action-btn cancel"
                                                                     onClick={() => handleStatusChange(o.id, "cancelled")}
@@ -1351,14 +1652,13 @@ const AdminLoginForm = () => {
 // ── Main AdminPanel ───────────────────────────────────────────────
 const AdminPanel = () => {
     const { adminUser, adminLogout, firebaseReady } = useAdmin();
-    const [tab,          setTab]         = useState("overview");
-    const [users,        setUsers]       = useState([]);
-    const [orders,       setOrders]      = useState([]);
+    const [tab,           setTab]          = useState("overview");
+    const [users,         setUsers]        = useState([]);
+    const [orders,        setOrders]       = useState([]);
     const [newOrderBadge, setNewOrderBadge] = useState(0);
-    const [confirmUser, setConfirmUser] = useState(null);
     const prevOrderCount = useRef(null);
 
-    // Load users
+    // Load users (for OverviewTab counts; UsersTab manages its own list)
     useEffect(() => {
         if (!adminUser) return;
         getRegisteredUsers().then(setUsers).catch(err => console.warn("load users:", err.message));
@@ -1407,24 +1707,6 @@ const AdminPanel = () => {
     }, [adminUser]);
 
     if (!adminUser) return <AdminLoginForm />;
-
-    const handleDeleteUser = (user) => setConfirmUser(user);
-
-    const confirmDeleteUser = async () => {
-        await deleteUserById(confirmUser.id);
-        setConfirmUser(null);
-        toast.success("Đã xóa người dùng!");
-    };
-
-    const handleChangeRole = async (userId, newRole) => {
-        await updateUserRole(userId, newRole);
-        toast.success("Đã cập nhật vai trò!");
-    };
-
-    const handleToggleLock = async (userId, isLocked) => {
-        await toggleUserLock(userId, isLocked);
-        toast.success(isLocked ? "Đã khóa tài khoản!" : "Đã mở khóa tài khoản!");
-    };
 
     const handleAdminLogout = () => {
         adminLogout();
@@ -1509,11 +1791,8 @@ const AdminPanel = () => {
                     {tab === "orders"     && <OrdersTab />}
                     {tab === "users"      && (
                         <UsersTab
-                            users={users}
                             currentUserId={adminUser?.id}
-                            onDelete={handleDeleteUser}
-                            onChangeRole={handleChangeRole}
-                            onToggleLock={handleToggleLock}
+                            onUsersChanged={setUsers}
                         />
                     )}
                     {tab === "tours"      && <CrudTab config={toursConfig} />}
@@ -1523,13 +1802,6 @@ const AdminPanel = () => {
                 </div>
             </main>
 
-            {confirmUser && (
-                <Confirm
-                    message={`Xóa người dùng "${confirmUser.fullName}"? Hành động này không thể hoàn tác.`}
-                    onConfirm={confirmDeleteUser}
-                    onCancel={() => setConfirmUser(null)}
-                />
-            )}
         </div>
     );
 };

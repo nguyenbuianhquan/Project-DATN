@@ -18,6 +18,7 @@ import Footer from './Components/Footer/Footer';
 import About from './Components/Pages/About';
 import TourDetailPage from './Components/Pages/TourDetail';
 import HotelDetail from './Components/Pages/HotelDetail';
+import HotelRoomSelect from './Components/Pages/HotelRoomSelect';
 import TransportDetail from './Components/Pages/TransportDetail';
 import RestaurantDetail from './Components/Pages/RestaurantDetail';
 import Index from './Components/Pages/Index';
@@ -34,6 +35,11 @@ function AppLayout() {
   const isAdmin = pathname.startsWith('/admin');
   const isAuth  = pathname === '/signin' || pathname === '/signup' || pathname === '/reset-password';
   const hideChrome = isAdmin || isAuth;
+
+  // ── Scroll to top on every route change (web standard) ──
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [pathname]);
 
   useEffect(() => {
     document.title = isAdmin ? 'Admin' : 'DAYTRIP';
@@ -89,6 +95,7 @@ function AppLayout() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/TourDetails/:id" element={<TourDetailPage />} />
         <Route path="/hotels/:id" element={<HotelDetail />} />
+        <Route path="/hotels/:id/rooms" element={<HotelRoomSelect />} />
         <Route path="/transport/:id" element={<TransportDetail />} />
         <Route path="/restaurants/:id" element={<RestaurantDetail />} />
         <Route path="/cart" element={<CartPage />} />

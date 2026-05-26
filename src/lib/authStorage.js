@@ -106,10 +106,12 @@ export const getRegisteredUsers = async () => {
     return Array.isArray(users) ? users.map(mapUser) : []
 }
 
-export const deleteUserById  = (userId)        => api.delete(`/users/${userId}`)
-export const updateUserRole  = (userId, role)  => api.patch(`/users/${userId}/role`, { role })
-export const toggleUserLock  = (userId, isLocked) => api.patch(`/users/${userId}/lock`, { isLocked })
-export const setUserOnline   = (userId, isOnline) => api.patch(`/users/${userId}/online`, { isOnline })
+export const deleteUserById   = (userId)           => api.delete(`/users/${userId}`)
+export const updateUserRole   = (userId, role)     => api.patch(`/users/${userId}/role`, { role })
+export const toggleUserLock   = (userId, isLocked) => api.patch(`/users/${userId}/lock`, { isLocked })
+export const setUserOnline    = (userId, isOnline) => api.patch(`/users/${userId}/online`, { isOnline })
+export const getUserOrders    = (userId)           => api.get(`/users/${userId}/orders`)
+export const editUserByAdmin  = (userId, data)     => api.patch(`/users/${userId}/admin-edit`, data)
 
 export const updateUserProfile = async (userId, data) => {
     const updated = await api.patch(`/users/${userId}`, data)

@@ -7,6 +7,7 @@ import authRoutes    from './routes/auth.js'
 import userRoutes    from './routes/users.js'
 import orderRoutes   from './routes/orders.js'
 import paymentRoutes from './routes/payments.js'
+import couponRoutes  from './routes/coupons.js'
 
 const app = express()
 
@@ -17,7 +18,11 @@ app.use('/api/auth',     authRoutes)
 app.use('/api/users',    userRoutes)
 app.use('/api/orders',   orderRoutes)
 app.use('/api/payments', paymentRoutes)
+app.use('/api/coupons',  couponRoutes)
 
-app.listen(process.env.PORT, () => {
-    console.log(`Backend running → http://localhost:${process.env.PORT}`)
+// Health check
+app.get('/api/health', (_, res) => res.json({ status: 'ok' }))
+
+app.listen(process.env.PORT || 4000, () => {
+    console.log(`✅ Backend running → http://localhost:${process.env.PORT || 4000}`)
 })

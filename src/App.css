@@ -2277,3 +2277,1393 @@
 
   .pf-intl-cards { grid-template-columns: 1fr 1fr; }
 }
+
+/* ══════════════════════════════════════════════════════════
+   BOOKING FLOW — bk-* classes
+   (Agoda/Booking.com style — Pay at Property)
+════════════════════════════════════════════════════════════ */
+
+/* ── Hero "Pay at Property" banner ───────────────────── */
+.bk-hero-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(16,185,129,0.07) 100%);
+  border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 22px;
+}
+
+.bk-hero-left {
+  flex: 1;
+}
+
+.bk-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(34,197,94,0.18);
+  border: 1px solid rgba(34,197,94,0.35);
+  border-radius: 20px;
+  padding: 4px 12px;
+  color: #4ade80;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+
+.bk-hero-badge i { font-size: 0.85rem; }
+
+.bk-hero-desc {
+  color: rgba(255,255,255,0.65);
+  font-size: 0.87rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.bk-hero-desc strong { color: #fff; }
+
+.bk-hero-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: rgba(34,197,94,0.15);
+  border: 1px solid rgba(34,197,94,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #4ade80;
+  font-size: 1.6rem;
+}
+
+/* ── Booking flow steps ───────────────────────────────── */
+.bk-flow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-bottom: 22px;
+  position: relative;
+}
+
+.bk-flow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+}
+
+.bk-flow-ico-wrap {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.bk-flow-ico {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(242,111,85,0.15);
+  border: 2px solid rgba(242,111,85,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary-color);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+/* connector line between steps */
+.bk-flow-line {
+  position: absolute;
+  top: 50%;
+  left: calc(50% + 23px);
+  right: calc(-50% + 23px);
+  height: 2px;
+  background: linear-gradient(to right, rgba(242,111,85,0.4), rgba(242,111,85,0.15));
+  transform: translateY(-50%);
+}
+
+.bk-flow-text {
+  padding: 0 4px;
+}
+
+.bk-flow-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+
+.bk-flow-sub {
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.38);
+  line-height: 1.4;
+}
+
+/* ── Policy chips row ─────────────────────────────────── */
+.bk-policy-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.bk-policy-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  color: rgba(255,255,255,0.65);
+  font-size: 0.77rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.bk-policy-chip i {
+  font-size: 0.82rem;
+  color: #4ade80;
+}
+
+/* ── Section divider with text ────────────────────────── */
+.bk-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 16px;
+  color: rgba(255,255,255,0.35);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.bk-divider::before,
+.bk-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+}
+
+.bk-divider em {
+  text-transform: none;
+  font-weight: 400;
+  color: rgba(255,255,255,0.25);
+}
+
+/* ── Guarantee info note ──────────────────────────────── */
+.bk-guarantee-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 16px;
+  background: rgba(251,191,36,0.07);
+  border: 1px solid rgba(251,191,36,0.2);
+  border-radius: 12px;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.bk-guarantee-note i {
+  color: #fbbf24;
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.bk-guarantee-note strong { color: rgba(255,255,255,0.9); }
+
+/* ── Card preview wrapper (side-by-side on desktop) ─── */
+.bk-card-preview-wrap {
+  margin-bottom: 0;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SIDEBAR ADDITIONS
+════════════════════════════════════════════════════════════ */
+
+/* ── Check-in / Check-out dates box ──────────────────── */
+.cu-sb-dates {
+  margin-bottom: 16px;
+}
+
+.cu-sb-date-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.cu-sb-date-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cu-sb-date-right { text-align: right; }
+
+.cu-sb-date-lbl {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: rgba(255,255,255,0.38);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cu-sb-date-right .cu-sb-date-lbl { justify-content: flex-end; }
+
+.cu-sb-date-val {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.cu-sb-date-empty {
+  font-style: normal;
+  color: rgba(255,255,255,0.3);
+  font-weight: 400;
+}
+
+.cu-sb-date-sep {
+  color: rgba(255,255,255,0.25);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+/* ── Pay at property badge ────────────────────────────── */
+.cu-pay-at-prop {
+  background: linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(16,185,129,0.07) 100%);
+  border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 14px 0 16px;
+}
+
+.cu-pay-at-prop-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4ade80;
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.cu-pay-at-prop-top i { font-size: 1rem; }
+
+.cu-pay-at-prop-desc {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.cu-pay-at-prop-desc strong { color: rgba(255,255,255,0.85); }
+
+/* ── Sidebar policy list ──────────────────────────────── */
+.cu-sb-policies {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.cu-sb-policy {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.55);
+}
+
+.cu-sb-policy i { font-size: 0.9rem; flex-shrink: 0; }
+
+/* ══════════════════════════════════════════════════════════
+   CHECKOUT NEW — ck-* classes
+════════════════════════════════════════════════════════════ */
+
+/* ── Countdown timer ──────────────────────────────────── */
+.ck-countdown {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: 14px;
+  background: rgba(242,111,85,0.1);
+  border: 1px solid rgba(242,111,85,0.25);
+  color: var(--secondary-color);
+  flex-shrink: 0;
+}
+
+.ck-countdown i { font-size: 1.3rem; }
+
+.ck-cd-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.ck-cd-time {
+  font-size: 1.35rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.ck-cd-warn {
+  background: rgba(239,68,68,0.12);
+  border-color: rgba(239,68,68,0.35);
+  color: #f87171;
+  animation: cdPulse 1s ease-in-out infinite;
+}
+
+.ck-cd-expired {
+  background: rgba(100,116,139,0.12);
+  border-color: rgba(100,116,139,0.25);
+  color: rgba(255,255,255,0.35);
+}
+
+@keyframes cdPulse {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.65; }
+}
+
+/* ── Service summary card ─────────────────────────────── */
+.ck-svc-card { overflow: hidden; }
+
+.ck-svc-inner {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  position: relative;
+}
+
+.ck-svc-img {
+  width: 90px;
+  height: 72px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.ck-svc-info { flex: 1; }
+
+.ck-svc-type {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--secondary-color);
+  background: rgba(242,111,85,0.1);
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin-bottom: 6px;
+}
+
+.ck-svc-name {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 6px;
+  line-height: 1.35;
+}
+
+.ck-svc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 8px;
+}
+
+.ck-svc-meta i { color: var(--secondary-color); }
+
+.ck-svc-price-row { display: flex; align-items: baseline; gap: 4px; }
+
+.ck-svc-price {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--secondary-color);
+}
+
+.ck-svc-price-unit {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.35);
+}
+
+.ck-svc-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(34,197,94,0.15);
+  border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #4ade80;
+}
+
+/* ── Payment mode buttons ─────────────────────────────── */
+.ck-pay-modes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.ck-pay-mode {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.ck-pay-mode:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.15);
+}
+
+/* Icon */
+.ck-pm-ico {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+/* Texts */
+.ck-pm-texts { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.ck-pm-label { font-size: 0.9rem; font-weight: 700; color: #fff; }
+.ck-pm-sub   { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+
+/* Badge */
+.ck-pm-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Check */
+.ck-pm-check {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
+/* ── Green (online) ── */
+.ck-pm-green .ck-pm-ico { background: rgba(34,197,94,0.12); color: #4ade80; }
+.ck-pm-green .ck-pm-badge { background: rgba(34,197,94,0.12); color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+.ck-pm-green .ck-pm-check { color: #4ade80; }
+.ck-pm-green.ck-pm-on { border-color: #4ade80; background: rgba(34,197,94,0.07); box-shadow: 0 0 0 1px #4ade80; }
+
+/* ── Blue (at property) ── */
+.ck-pm-blue .ck-pm-ico { background: rgba(96,165,250,0.12); color: #60a5fa; }
+.ck-pm-blue .ck-pm-badge { background: rgba(96,165,250,0.12); color: #60a5fa; border: 1px solid rgba(96,165,250,0.25); }
+.ck-pm-blue .ck-pm-check { color: #60a5fa; }
+.ck-pm-blue.ck-pm-on { border-color: #60a5fa; background: rgba(96,165,250,0.07); box-shadow: 0 0 0 1px #60a5fa; }
+
+/* ── Orange (deposit) ── */
+.ck-pm-orange .ck-pm-ico { background: rgba(251,146,60,0.12); color: #fb923c; }
+.ck-pm-orange .ck-pm-badge { background: rgba(251,146,60,0.12); color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+.ck-pm-orange .ck-pm-check { color: #fb923c; }
+.ck-pm-orange.ck-pm-on { border-color: #fb923c; background: rgba(251,146,60,0.07); box-shadow: 0 0 0 1px #fb923c; }
+
+/* ── Online sub-method section ────────────────────────── */
+.ck-online-section {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 18px;
+  animation: pfFadeIn 0.2s ease;
+}
+
+.ck-online-heading {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+
+.ck-online-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.ck-online-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.ck-online-btn:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.14);
+}
+
+.ck-online-on {
+  border-color: var(--secondary-color) !important;
+  background: rgba(242,111,85,0.08) !important;
+  box-shadow: 0 0 0 1px var(--secondary-color);
+}
+
+.ck-online-ico { font-size: 1.25rem; color: var(--secondary-color); flex-shrink: 0; }
+.ck-online-texts { flex: 1; display: flex; flex-direction: column; gap: 1px; }
+.ck-online-name { font-size: 0.87rem; font-weight: 700; color: #fff; }
+.ck-online-sub  { font-size: 0.73rem; color: rgba(255,255,255,0.38); }
+.ck-online-check { color: var(--secondary-color); font-size: 1rem; flex-shrink: 0; }
+.ck-online-arr   { color: rgba(255,255,255,0.2); font-size: 0.8rem; flex-shrink: 0; }
+
+/* ── Card section wrapper ─────────────────────────────── */
+.ck-card-wrap { animation: pfFadeIn 0.2s ease; }
+
+/* ── MoMo/VNPay redirect box ──────────────────────────── */
+.ck-redirect-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 12px 14px;
+  background: rgba(99,160,255,0.07);
+  border: 1px solid rgba(99,160,255,0.18);
+  border-radius: 12px;
+  color: rgba(255,255,255,0.55);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  margin-top: 14px;
+  animation: pfFadeIn 0.2s ease;
+}
+
+.ck-redirect-box i { color: #63a0ff; font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+.ck-redirect-box strong { color: #fff; }
+
+/* ── At property info ─────────────────────────────────── */
+.ck-at-prop {
+  display: flex;
+  gap: 16px;
+  padding: 18px;
+  background: rgba(96,165,250,0.07);
+  border: 1px solid rgba(96,165,250,0.2);
+  border-radius: 14px;
+  margin-top: 4px;
+  animation: pfFadeIn 0.2s ease;
+}
+
+.ck-at-prop-ico {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(96,165,250,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #60a5fa;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.ck-at-prop-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+.ck-at-prop-desc {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 10px;
+}
+
+.ck-at-prop-desc strong { color: #fff; }
+
+.ck-at-prop-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ck-at-prop-chips span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #4ade80;
+}
+
+.ck-at-prop-chips i { font-size: 0.75rem; }
+
+/* ── Deposit breakdown ────────────────────────────────── */
+.ck-deposit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+  background: rgba(251,146,60,0.07);
+  border: 1px solid rgba(251,146,60,0.2);
+  border-radius: 14px;
+  margin-top: 4px;
+  animation: pfFadeIn 0.2s ease;
+}
+
+.ck-dep-block {
+  flex: 1;
+  text-align: center;
+}
+
+.ck-dep-lbl {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 6px;
+}
+
+.ck-dep-now .ck-dep-amt  { color: #fb923c; font-size: 1.1rem; font-weight: 800; }
+.ck-dep-later .ck-dep-amt { color: #fff;    font-size: 1.1rem; font-weight: 800; }
+
+.ck-dep-pct {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.3);
+  margin-top: 3px;
+}
+
+.ck-dep-plus {
+  font-size: 1.2rem;
+  color: rgba(255,255,255,0.2);
+  flex-shrink: 0;
+}
+
+/* ── Coupon section ───────────────────────────────────── */
+.ck-coupon-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.ck-coupon-btn {
+  padding: 0 20px;
+  height: 44px;
+  border-radius: 10px;
+  border: none;
+  background: var(--secondary-color);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.2s;
+}
+
+.ck-coupon-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.ck-coupon-btn:hover:not(:disabled) { opacity: 0.88; }
+
+.ck-coupon-err {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #f87171;
+  font-size: 0.8rem;
+  margin-top: 10px;
+}
+
+.ck-coupon-hints {
+  margin-top: 10px;
+  font-size: 0.76rem;
+  color: rgba(255,255,255,0.35);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ck-coupon-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px dashed rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.55);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.ck-coupon-chip:hover {
+  border-color: var(--secondary-color);
+  color: var(--secondary-color);
+}
+
+/* Applied coupon */
+.ck-coupon-applied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: rgba(34,197,94,0.08);
+  border: 1.5px solid rgba(34,197,94,0.3);
+  border-radius: 12px;
+}
+
+.ck-coupon-applied-l {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #4ade80;
+  font-size: 1.2rem;
+}
+
+.ck-ca-label { font-size: 0.87rem; font-weight: 700; color: #fff; }
+.ck-ca-save  { font-size: 0.75rem; color: #4ade80; }
+
+.ck-coupon-rm {
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.3);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+}
+.ck-coupon-rm:hover { color: #f87171; }
+
+/* ── Pay-now strip ────────────────────────────────────── */
+.ck-pay-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+}
+
+.ck-pay-strip-l { display: flex; flex-direction: column; gap: 2px; }
+
+.ck-pay-strip-lbl {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ck-pay-strip-sub {
+  font-size: 0.73rem;
+  color: rgba(255,255,255,0.3);
+}
+
+.ck-pay-strip-amt {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--secondary-color);
+}
+
+/* ── Sidebar coupon discount line ─────────────────────── */
+.cu-price-discount {
+  color: #4ade80 !important;
+}
+
+.cu-price-discount span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.82rem;
+}
+
+.cu-price-discount span:last-child {
+  color: #4ade80;
+  font-weight: 700;
+}
+
+/* ── Sidebar payment mode badge variants ──────────────── */
+.cu-pap-deposit {
+  background: linear-gradient(135deg,rgba(251,146,60,0.1) 0%,rgba(251,191,36,0.07) 100%) !important;
+  border-color: rgba(251,146,60,0.25) !important;
+}
+
+.cu-pap-deposit .cu-pay-at-prop-top { color: #fb923c !important; }
+
+.cu-pap-online {
+  background: linear-gradient(135deg,rgba(34,197,94,0.1) 0%,rgba(16,185,129,0.07) 100%) !important;
+  border-color: rgba(34,197,94,0.25) !important;
+}
+
+.cu-pap-online .cu-pay-at-prop-top { color: #4ade80 !important; }
+
+/* ── Responsive ck-* ──────────────────────────────────── */
+@media (max-width: 700px) {
+  .ck-countdown { padding: 8px 12px; }
+  .ck-cd-time   { font-size: 1.1rem; }
+
+  .ck-pay-modes { gap: 8px; }
+  .ck-pm-badge  { display: none; }
+
+  .ck-deposit { flex-direction: column; gap: 8px; }
+  .ck-dep-plus { transform: rotate(90deg); }
+}
+
+@media (max-width: 480px) {
+  .ck-svc-img  { width: 72px; height: 58px; }
+  .ck-svc-name { font-size: 0.9rem; }
+  .ck-pay-strip { flex-direction: column; align-items: flex-start; gap: 6px; }
+}
+
+/* ── Responsive bk-* ─────────────────────────────────── */
+@media (max-width: 700px) {
+  .bk-flow {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .bk-flow-line { display: none; }
+
+  .bk-hero-icon-wrap { display: none; }
+}
+
+@media (max-width: 480px) {
+  .bk-flow { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .bk-hero-banner { padding: 14px 16px; }
+  .bk-policy-row { gap: 6px; }
+  .bk-policy-chip { font-size: 0.72rem; padding: 5px 10px; }
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   hrs-*   Hotel Room Select page
+   ════════════════════════════════════════════════════════════════ */
+
+/* -- Page wrapper ------------------------------------------- */
+.hrs-page {
+  min-height: 100vh;
+  background: var(--body-bg, #0d1117);
+  padding-bottom: 60px;
+}
+
+/* -- Summary bar (sticky top strip) ------------------------- */
+.hrs-summary-bar {
+  background: rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 14px 0;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  backdrop-filter: blur(12px);
+}
+.hrs-summary-inner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.hrs-summary-hotel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 200px;
+}
+.hrs-summary-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(255,255,255,0.1);
+}
+.hrs-summary-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+.hrs-summary-loc {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.5);
+  margin-top: 2px;
+}
+.hrs-summary-loc i { margin-right: 3px; color: var(--secondary-color, #f6c948); }
+.hrs-summary-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+.hrs-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.hrs-summary-item > i {
+  font-size: 1rem;
+  color: var(--secondary-color, #f6c948);
+  flex-shrink: 0;
+}
+.hrs-si-label {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.45);
+  line-height: 1;
+}
+.hrs-si-val {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.hrs-summary-arrow { color: rgba(255,255,255,0.3); font-size: 1rem; }
+.hrs-summary-sep {
+  width: 1px;
+  height: 32px;
+  background: rgba(255,255,255,0.1);
+  flex-shrink: 0;
+}
+.hrs-change-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.75);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.hrs-change-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border-color: rgba(255,255,255,0.25);
+}
+
+/* -- Main content ------------------------------------------- */
+.hrs-main { padding-top: 28px; }
+
+/* -- Toolbar ------------------------------------------------ */
+.hrs-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.hrs-toolbar-left { flex: 1; }
+.hrs-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.hrs-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+.hrs-heading i { color: var(--secondary-color, #f6c948); font-size: 1.4rem; }
+.hrs-count-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(246,201,72,0.15);
+  color: var(--secondary-color, #f6c948);
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(246,201,72,0.3);
+}
+.hrs-filter-group,
+.hrs-sort-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 4px 8px;
+}
+.hrs-filter-label {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+.hrs-filter-btn {
+  padding: 5px 12px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.hrs-filter-btn:hover { color: #fff; background: rgba(255,255,255,0.07); }
+.hrs-filter-btn.active {
+  background: rgba(246,201,72,0.18);
+  color: var(--secondary-color, #f6c948);
+}
+.hrs-sort-select {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  padding: 4px 2px;
+}
+.hrs-sort-select option { background: #1a1d24; color: #fff; }
+
+/* -- Room list --------------------------------------------- */
+.hrs-room-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.hrs-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(255,255,255,0.35);
+}
+.hrs-empty i { font-size: 3rem; display: block; margin-bottom: 12px; }
+.hrs-empty p { font-size: 0.95rem; }
+
+/* -- Room card --------------------------------------------- */
+.hrs-room-card {
+  display: grid;
+  grid-template-columns: 260px 1fr auto;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.hrs-room-card:hover:not(.hrs-unavail) {
+  border-color: rgba(246,201,72,0.3);
+  box-shadow: 0 6px 28px rgba(0,0,0,0.35);
+  transform: translateY(-2px);
+}
+.hrs-room-card.hrs-unavail { opacity: 0.55; filter: grayscale(0.5); }
+.hrs-room-card.hrs-selected {
+  border-color: rgba(246,201,72,0.6);
+  box-shadow: 0 0 0 3px rgba(246,201,72,0.15);
+}
+
+/* Image column */
+.hrs-room-img-wrap {
+  position: relative;
+  overflow: hidden;
+  min-height: 200px;
+}
+.hrs-room-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s;
+}
+.hrs-room-card:hover .hrs-room-img { transform: scale(1.04); }
+.hrs-sold-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.62);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: rgba(255,255,255,0.85);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.hrs-sold-overlay i { font-size: 2rem; color: #e85757; }
+.hrs-avail-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(22,163,74,0.9);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  backdrop-filter: blur(4px);
+}
+
+/* Details column */
+.hrs-room-details {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  justify-content: space-between;
+}
+.hrs-room-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 8px;
+}
+.hrs-room-specs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+.hrs-spec {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.55);
+}
+.hrs-spec i { color: rgba(255,255,255,0.35); font-size: 0.9rem; }
+.hrs-amenities { display: flex; flex-wrap: wrap; gap: 6px; }
+.hrs-amenity {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 20px;
+  font-size: 0.74rem;
+  color: rgba(255,255,255,0.65);
+}
+.hrs-amenity i { font-size: 0.8rem; }
+.hrs-policies { display: flex; flex-wrap: wrap; gap: 6px; }
+.hrs-policy {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.73rem;
+  font-weight: 600;
+}
+.hrs-policy i { font-size: 0.8rem; }
+.hrs-policy.green  { background: rgba(22,163,74,0.12);  color: #4ade80; border: 1px solid rgba(22,163,74,0.2); }
+.hrs-policy.blue   { background: rgba(59,130,246,0.12); color: #93c5fd; border: 1px solid rgba(59,130,246,0.2); }
+.hrs-policy.yellow { background: rgba(246,201,72,0.1);  color: var(--secondary-color,#f6c948); border: 1px solid rgba(246,201,72,0.2); }
+
+/* CTA column */
+.hrs-room-cta {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 10px;
+  min-width: 190px;
+  border-left: 1px solid rgba(255,255,255,0.06);
+}
+.hrs-price-block { text-align: right; }
+.hrs-price-night {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  justify-content: flex-end;
+}
+.hrs-price-num {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--secondary-color, #f6c948);
+}
+.hrs-price-unit { font-size: 0.78rem; color: rgba(255,255,255,0.4); }
+.hrs-price-total {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.55);
+  margin-top: 3px;
+}
+.hrs-price-total-label { color: rgba(255,255,255,0.35); }
+.hrs-price-tax { font-size: 0.72rem; color: rgba(255,255,255,0.3); margin-top: 2px; }
+.hrs-select-btn {
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--secondary-color,#f6c948), #f09819);
+  color: #1a1200;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(246,201,72,0.3);
+}
+.hrs-select-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+  box-shadow: 0 6px 22px rgba(246,201,72,0.45);
+  transform: translateY(-1px);
+}
+.hrs-select-btn.hrs-selecting {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.7);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.hrs-select-btn.hrs-disabled {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.3);
+  box-shadow: none;
+  cursor: not-allowed;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.hrs-cta-note {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.73rem;
+  color: rgba(255,255,255,0.35);
+}
+.hrs-cta-note i { color: #4ade80; }
+
+/* -- Bottom note ------------------------------------------- */
+.hrs-bottom-note {
+  margin-top: 28px;
+  padding: 12px 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  line-height: 1.5;
+  text-align: center;
+}
+.hrs-bottom-note i { color: rgba(255,255,255,0.3); flex-shrink: 0; font-size: 1rem; }
+
+/* -- Responsive -------------------------------------------- */
+@media (max-width: 900px) {
+  .hrs-room-card {
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: auto auto;
+  }
+  .hrs-room-cta {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-left: none;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 14px 18px;
+    min-width: unset;
+  }
+  .hrs-select-btn { width: auto; padding: 11px 22px; }
+}
+@media (max-width: 640px) {
+  .hrs-room-card { grid-template-columns: 1fr; }
+  .hrs-room-img-wrap { min-height: 180px; }
+  .hrs-room-cta {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .hrs-select-btn { width: 100%; }
+  .hrs-price-block { text-align: left; }
+  .hrs-price-night { justify-content: flex-start; }
+  .hrs-summary-info { gap: 6px; }
+  .hrs-summary-item { padding: 5px 10px; }
+  .hrs-summary-sep,
+  .hrs-summary-arrow { display: none; }
+  .hrs-toolbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
+
+/* Room badge inside checkout service card */
+.ck-svc-room-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(246,201,72,0.12);
+  border: 1px solid rgba(246,201,72,0.25);
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--secondary-color, #f6c948);
+  margin-bottom: 6px;
+}
+.ck-svc-room-badge i { font-size: 0.82rem; }
